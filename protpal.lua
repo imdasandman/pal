@@ -158,7 +158,7 @@ end
 dark_addon.rotation.register({
     spec = dark_addon.rotation.classes.paladin.protection,
     name = 'protpal',
-    label = 'PallyPal - PROT',
+    label = 'Pal  - PROT',
     combat = combat,
     resting = resting,
     interface = interface,
