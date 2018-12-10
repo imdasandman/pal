@@ -6,3 +6,4 @@
 ## Dependencies: dark_addon
 
 protpal.lua
+holypal.lua
