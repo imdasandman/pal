@@ -1,0 +1,8 @@
+## Title: Dark Template
+## Notes: An example addon.
+## Interface: 80100
+## LoadOnDemand: 0
+## DefaultState: enabled
+## Dependencies: dark_addon
+
+protpal.lua
