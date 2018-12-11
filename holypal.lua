@@ -215,7 +215,7 @@ local function combat()
     if talent(6, 2) and toggle('cooldowns', false) and AutoAvengingCrusader == true and -spell(SB.AvengingCrusader) == 0 and player.buff(SB.BeaconofVirtue).down and target.distance < 8 and (lowest.health.percent <= 60 or tank.health.percent <= 75 or group_health_percent < 60) and player.buff(SB.HolyAvenger).down then
         --print 'CD - Avenging Crusader'
         return cast(SB.AvengingCrusader, 'player')
-    elseif (talent(6, 1) or talent(6, 3)) and toggle('cooldowns', false) and -spell(SB.AvengingWrath) == 0 and player.buff(SB.BeaconofVirtue).down and (lowest.health.percent <= 60 or tank.health.percent <= 75 or group_health_percent < 60) and player.buff(SB.HolyAvenger).down then
+    elseif autoWrath == true and (talent(6, 1) or talent(6, 3)) and toggle('cooldowns', false) and -spell(SB.AvengingWrath) == 0 and player.buff(SB.BeaconofVirtue).down and (lowest.health.percent <= 60 or tank.health.percent <= 75 or group_health_percent < 60) and player.buff(SB.HolyAvenger).down then
         --print 'CD - Avenging Crusader'
         return cast(SB.AvengingWrath, 'player')
     end
@@ -227,7 +227,7 @@ local function combat()
     end
 
     --Talent row 5  (1 is passive - supports 2+3)
-    if talent(5, 3) and toggle('cooldowns', false) and -spell(SB.HolyAvenger) == 0 and lowest.health.percent <= 80 and player.buff(SB.AvengingCrusader).down then
+    if autoHolyAvenger == true and talent(5, 3) and toggle('cooldowns', false) and -spell(SB.HolyAvenger) == 0 and lowest.health.percent <= 80 and player.buff(SB.AvengingCrusader).down then
         --print 'CD - HolyAvenger'
         cast(SB.HolyAvenger, 'player')
     elseif talent(5, 2) and toggle('Cooldowns, false') and tank.castable(SB.HolyPrism) and tank.health.percent <= 60 then
@@ -239,11 +239,11 @@ local function combat()
     end
 
     -- defensive cooldowns
-    if toggle('cooldowns', false) and -spell(SB.DivineProtection) == 0 and player.health.percent < 60 and -spell(SB.DivineProtection) == 0 then
+    if autoDivineProtection == true and toggle('cooldowns', false) and -spell(SB.DivineProtection) == 0 and player.health.percent < 60 and -spell(SB.DivineProtection) == 0 then
         --print 'CD - Divine Protection'
         cast(SB.DivineProtection, 'player')
     end
-    if toggle('cooldowns', false) and -spell(SB.DivineShield) == 0 and player.health.percent < 20 then
+    if autoDivineShield == true and toggle('cooldowns', false) and -spell(SB.DivineShield) == 0 and player.health.percent < 20 then
         --print 'CD - Divine Shield'
         return cast(SB.DivineShield, 'player')
     end
@@ -253,16 +253,16 @@ local function combat()
     end
     -- Talent row 7
 
-    if toggle('cooldowns', false) and talent(7, 3) and -spell(SB.BeaconofVirtue) == 0 and player.buff(SB.AvengingCrusader).down and lowest.health.percent < 65 and tank.health.percent < 65 and lowest.distance <= 40 then
+    if autoBeaconofVirtue == true and toggle('cooldowns', false) and talent(7, 3) and -spell(SB.BeaconofVirtue) == 0 and player.buff(SB.AvengingCrusader).down and lowest.health.percent < 65 and tank.health.percent < 65 and lowest.distance <= 40 then
         --print 'CD - Beacon of Virtue - lowest'
         return cast(SB.BeaconofVirtue, lowest)
-    elseif toggle('cooldowns', false) and talent(7, 3) and -spell(SB.BeaconofVirtue) == 0 and player.buff(SB.AvengingCrusader).down and lowest.health.percent < 70 and tank.health.percent < 65 and tank.distance <= 40 then
+    elseif autoBeaconofVirtue == true and toggle('cooldowns', false) and talent(7, 3) and -spell(SB.BeaconofVirtue) == 0 and player.buff(SB.AvengingCrusader).down and lowest.health.percent < 70 and tank.health.percent < 65 and tank.distance <= 40 then
         --print 'CD - Beacon of Virtue - tank'
         return cast(SB.BeaconofVirtue, tank)
-    elseif toggle('cooldowns', false) and talent(7, 3) and -spell(SB.BeaconofVirtue) == 0 and player.buff(SB.AvengingCrusader).down and group_health_percent < 70 and lowest.distance <= 40 then
+    elseif autoBeaconofVirtue == true and toggle('cooldowns', false) and talent(7, 3) and -spell(SB.BeaconofVirtue) == 0 and player.buff(SB.AvengingCrusader).down and group_health_percent < 70 and lowest.distance <= 40 then
         --print 'CD - Beacon - group low'
         return cast(SB.BeaconofVirtue, lowest)
-    elseif toggle('cooldowns', false) and talent(7, 3) and -spell(SB.BeaconofVirtue) == 0 and player.buff(SB.AvengingCrusader).down and group_health_percent < 75 and lowest.distance > 40 then
+    elseif autoBeaconofVirtue == true and toggle('cooldowns', false) and talent(7, 3) and -spell(SB.BeaconofVirtue) == 0 and player.buff(SB.AvengingCrusader).down and group_health_percent < 75 and lowest.distance > 40 then
         --print 'CD - Beacon - group low - self'
         return cast(SB.BeaconofVirtue, player)
     end
@@ -480,91 +480,89 @@ function interface()
             { key = 'autoDivineProtection', type = 'checkbox', text = 'Divine Protection', desc = '' },
             { key = 'autoDivineShield', type = 'checkbox', text = 'Divine Shield', desc = '' },
             { key = 'autoBeaconofVirtue', type = 'checkbox', text = 'Beacon of Virtue', desc = '' },
+            { type = 'rule' },
         }
     }
-
-
-
 
     configWindow = dark_addon.interface.builder.buildGUI(settings)
 
     dark_addon.interface.buttons.add_toggle({
-    name = 'DPS',
-    label = 'DPS',
-    on = {
-    label = 'DPS',
-    color = dark_addon.interface.color.orange,
-    color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-    },
-    off = {
-    label = 'DPS',
-    color = dark_addon.interface.color.grey,
-    color2 = dark_addon.interface.color.dark_grey
-    }
+        name = 'DPS',
+        label = 'DPS',
+        on = {
+            label = 'DPS',
+            color = dark_addon.interface.color.orange,
+            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
+        },
+        off = {
+            label = 'DPS',
+            color = dark_addon.interface.color.grey,
+            color2 = dark_addon.interface.color.dark_grey
+        }
     })
     dark_addon.interface.buttons.add_toggle({
-    name = 'DISPELL',
-    label = 'DISP',
-    on = {
-    label = 'DISP',
-    color = dark_addon.interface.color.orange,
-    color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-    },
-    off = {
-    label = 'DISP',
-    color = dark_addon.interface.color.grey,
-    color2 = dark_addon.interface.color.dark_grey
-    }
+        name = 'DISPELL',
+        label = 'DISP',
+        on = {
+            label = 'DISP',
+            color = dark_addon.interface.color.orange,
+            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
+        },
+        off = {
+            label = 'DISP',
+            color = dark_addon.interface.color.grey,
+            color2 = dark_addon.interface.color.dark_grey
+        }
     })
     dark_addon.interface.buttons.add_toggle({
-    name = 'BoP',
-    label = 'BoP',
-    on = {
-    label = 'BoP',
-    color = dark_addon.interface.color.orange,
-    color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-    },
-    off = {
-    label = 'BoP',
-    color = dark_addon.interface.color.grey,
-    color2 = dark_addon.interface.color.dark_grey
-    }
+        name = 'BoP',
+        label = 'BoP',
+        on = {
+            label = 'BoP',
+            color = dark_addon.interface.color.orange,
+            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
+        },
+        off = {
+            label = 'BoP',
+            color = dark_addon.interface.color.grey,
+            color2 = dark_addon.interface.color.dark_grey
+        }
     })
     dark_addon.interface.buttons.add_toggle({
-    name = 'LoD',
-    label = 'LightOfDawn',
-    on = {
-    label = 'LoD',
-    color = dark_addon.interface.color.orange,
-    color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-    },
-    off = {
-    label = 'LoD',
-    color = dark_addon.interface.color.grey,
-    color2 = dark_addon.interface.color.dark_grey
-    }
+        name = 'LoD',
+        label = 'LightOfDawn',
+        on = {
+            label = 'LoD',
+            color = dark_addon.interface.color.orange,
+            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
+        },
+        off = {
+            label = 'LoD',
+            color = dark_addon.interface.color.grey,
+            color2 = dark_addon.interface.color.dark_grey
+        }
     })
     dark_addon.interface.buttons.add_toggle({
-    name = 'settings',
-    label = 'Rotation Settings',
-    font = 'dark_addon_icon',
-    on = {
-    label = dark_addon.interface.icon('cog'),
-    color = dark_addon.interface.color.cyan,
-    color2 = dark_addon.interface.color.dark_cyan
-    },
-    off = {
-    label = dark_addon.interface.icon('cog'),
-    color = dark_addon.interface.color.grey,
-    color2 = dark_addon.interface.color.dark_grey
-    },
-    callback = function (self)
-    if configWindow.parent:IsShown() then
-    configWindow.parent:Hide()
-    else
-    configWindow.parent:Show()
-    end
-    end
+        name = 'settings',
+        label = 'Rotation Settings',
+        font = 'dark_addon_icon',
+        on = {
+            label = dark_addon.interface.icon('cog'),
+            color = dark_addon.interface.color.cyan,
+            color2 = dark_addon.interface.color.dark_cyan
+        },
+        off = {
+            label = dark_addon.interface.icon('cog'),
+            color = dark_addon.interface.color.grey,
+            color2 = dark_addon.interface.color.dark_grey
+        },
+        callback = function(self)
+            if configWindow.parent:IsShown() then
+                configWindow.parent:Hide()
+            else
+                configWindow.parent:Show()
+            end
+        end
     })
 end
 
