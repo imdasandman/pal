@@ -9,13 +9,14 @@
 -- Interrupts - Holy Pally does not have a traditional 'kick' - but if interrupts are selected it will use Blinding Light (if talent is selected)
 -- and hammer of justice to stun if it can - if you want to preserve your stuns for manual use - do not select interrupt
 
--- Cool Downs - if cooldowns are selected the rotation will use: AvengingCrusader, HolyAvenger, DivineProtection, DivineShield, Beacon of Virtue and aura mastery
+
 
 local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.paladin
 local TB = dark_addon.rotation.spellbooks.paladin
 local DB = dark_addon.rotation.spellbooks.paladin
 local race = UnitRace("player")
+
 
 -- enable to treat tank like everyone else - all 'tank' statements will be ignored
 --dark_addon.environment.virtual.exclude_tanks = false
@@ -26,7 +27,26 @@ local function combat()
         return
     end
 
+    -----------------------------
+    --- Reading from settings
+    -----------------------------
+
+    local autoStun = dark_addon.settings.fetch('holypal_settings_autoStun')
+    local intpercent = dark_addon.settings.fetch('holypal_settings_intpercent')
+    local usehealthstone = dark_addon.settings.fetch('holypal_settings_healthstone.check')
+    local healthstonepercent = dark_addon.settings.fetch('holypal_settings_healthstone.spin')
+    local autoRacial = dark_addon.settings.fetch('holypal_settings_autoRacial')
+    local autoAura = dark_addon.settings.fetch('holypal_settings_autoAura')
+    local AutoAvengingCrusader = dark_addon.settings.fetch('holypal_settings_autoAvengingCrusader')
+    local autoHolyAvenger = dark_addon.settings.fetch('holypal_settings_autoHolyAvenger')
+    local autoWrath = dark_addon.settings.fetch('holypal_settings_autoWrath')
+    local autoDivineProtection = dark_addon.settings.fetch('holypal_settings_autoDivineProtection')
+    local autoDivineShield = dark_addon.settings.fetch('holypal_settings_autoDivineShield')
+    local autoBeaconofVirtue = dark_addon.settings.fetch('holypal_settings_autoBeaconofVirtue')
+
+    -----------------------------
     --- Reticulate Splines
+    -----------------------------
     local group_health_percent = 100 * UnitHealth("player") / UnitHealthMax("player") or 0
     local group_health = group_health_percent
     local group_unit_count = IsInGroup() and GetNumGroupMembers() or 1
@@ -46,6 +66,23 @@ local function combat()
         end
     end
     group_health_percent = group_health / (group_unit_count - dead_units)
+
+    -----------------------------
+    --- Determine mobs in range (not 100% right)
+    -----------------------------
+    local inRange = 0
+
+    if toggle('multitarget', false) then
+        for i = 1, 40 do
+            if UnitExists('nameplate' .. i) and IsSpellInRange('Consecration', 'nameplate' .. i) == 1 and UnitAffectingCombat('nameplate' .. i) then
+                inRange = inRange + 1
+            end
+        end
+    else
+        inRange = 1
+    end
+
+
 
 
     --[[
@@ -89,7 +126,7 @@ local function combat()
         return cast(SB.BlindingLight, 'target')
     end
 
-    if toggle('interrupts', false) and target.interrupt(80) and target.distance < 8 and -spell(SB.HammerofJustice) == 0 then
+    if toggle('interrupts', false) and autoStun == true and target.interrupt(intpercent, false) and target.distance < 8 and -spell(SB.HammerofJustice) == 0 then
         return cast(SB.HammerofJustice, 'target')
     end
 
@@ -175,7 +212,7 @@ local function combat()
 
 
     -- Ok Lets do some cooldowns
-    if talent(6, 2) and toggle('cooldowns', false) and -spell(SB.AvengingCrusader) == 0 and player.buff(SB.BeaconofVirtue).down and target.distance < 8 and (lowest.health.percent <= 60 or tank.health.percent <= 75 or group_health_percent < 60) and player.buff(SB.HolyAvenger).down then
+    if talent(6, 2) and toggle('cooldowns', false) and AutoAvengingCrusader == true and -spell(SB.AvengingCrusader) == 0 and player.buff(SB.BeaconofVirtue).down and target.distance < 8 and (lowest.health.percent <= 60 or tank.health.percent <= 75 or group_health_percent < 60) and player.buff(SB.HolyAvenger).down then
         --print 'CD - Avenging Crusader'
         return cast(SB.AvengingCrusader, 'player')
     elseif (talent(6, 1) or talent(6, 3)) and toggle('cooldowns', false) and -spell(SB.AvengingWrath) == 0 and player.buff(SB.BeaconofVirtue).down and (lowest.health.percent <= 60 or tank.health.percent <= 75 or group_health_percent < 60) and player.buff(SB.HolyAvenger).down then
@@ -210,7 +247,7 @@ local function combat()
         --print 'CD - Divine Shield'
         return cast(SB.DivineShield, 'player')
     end
-    if toggle('cooldowns', false) and group_health_percent < 55 and -spell(SB.AuraMastery) == 0 then
+    if toggle('cooldowns', false) and autoAura == true and group_health_percent < 55 and -spell(SB.AuraMastery) == 0 then
         --print 'CD - Aura Mastery'
         return cast(SB.AuraMastery)
     end
@@ -330,14 +367,13 @@ local function combat()
     if -spell(SB.CrusaderStrike) == 0 and lowest.health.percent > 50 and tank.health.percent > 50 and target.enemy and target.distance < 8 then
         return cast(SB.CrusaderStrike, 'target')
     end
-    --Conc
-    if toggle('DPS', false) and -spell(SB.ConsecrationProt) == 0 and target.debuff(SB.ConsecrationProt).down and lowest.health.percent > 50 and target.distance < 4 then
+    --Consecration
+    if toggle('DPS', false) and -spell(SB.ConsecrationProt) == 0 and inRange >= 3 and target.debuff(SB.ConsecrationProt).down and lowest.health.percent > 50 and target.distance < 4 then
         return cast(SB.ConsecrationProt, 'player')
     end
 
     -- uncomment if not blood elf - using racial trait on CD for mana ... make sure to turn this off in Kings Rest if group depend on you for dispell
-    if toggle('Racial', false) and race == "Blood Elf" and player.power.mana.percent < 90 and -spell(SB.ArcaneTorrent) == 0 then
-        --print (race)
+    if autoRacial == true and race == "Blood Elf" and player.power.mana.percent < 90 and -spell(SB.ArcaneTorrent) == 0 then
         return cast(SB.ArcaneTorrent)
     end
 
@@ -345,6 +381,7 @@ end
 
 local function resting()
     if player.alive and player.buff(SB.Refreshment).down and player.buff(SB.Drink).down then
+
 
         --Beacons
         if talent(7, 1) and tank.buff(SB.BeaconofLight).down then
@@ -415,75 +452,119 @@ local function resting()
 end
 
 function interface()
-    dark_addon.interface.buttons.add_toggle({
-        name = 'DPS',
-        label = 'DPS',
-        on = {
-            label = 'DPS',
-            color = dark_addon.interface.color.orange,
-            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-        },
-        off = {
-            label = 'DPS',
-            color = dark_addon.interface.color.grey,
-            color2 = dark_addon.interface.color.dark_grey
+    local settings = {
+        key = 'holypal_settings',
+        title = 'Holy Paladin',
+        width = 250,
+        height = 380,
+        resize = true,
+        show = false,
+        template = {
+            { type = 'header', text = '               Holy Paladin Settings' },
+            { type = 'text', text = 'Everything on the screen is LIVE.  As you make changes, they are being fed to the engine.' },
+            { type = 'rule' },
+            { type = 'text', text = 'General Settings' },
+            { key = 'healthstone', type = 'checkspin', text = 'Healthstone', desc = 'Auto use Healthstone at health %', min = 5, max = 100, step = 5 },
+            -- { key = 'input', type = 'input', text = 'TextBox', desc = 'Description of Textbox' },
+            { key = 'intpercent', type = 'spinner', text = 'Interrupt %', desc = '% cast time to interrupt at', min = 5, max = 100, step = 5 },
+            { type = 'rule' },
+            { type = 'text', text = 'Utility' },
+            { key = 'autoStun', type = 'checkbox', text = 'Stun', desc = 'Use stun as an interrupt' },
+            { key = 'autoRacial', type = 'checkbox', text = 'Racial', desc = 'Use Racial on CD (Blood Elf only)' },
+            { type = 'rule' },
+            { type = 'text', text = 'Automated CoolDowns' },
+            { key = 'autoAura', type = 'checkbox', text = 'Aura Mastery', desc = '' },
+            { key = 'autoAvengingCrusader', type = 'checkbox', text = 'AvengingCrusader', desc = '' },
+            { key = 'autoHolyAvenger', type = 'checkbox', text = 'Holy Avenger', desc = '' },
+            { key = 'autoWrath', type = 'checkbox', text = 'Avenging Wrath', desc = '' },
+            { key = 'autoDivineProtection', type = 'checkbox', text = 'Divine Protection', desc = '' },
+            { key = 'autoDivineShield', type = 'checkbox', text = 'Divine Shield', desc = '' },
+            { key = 'autoBeaconofVirtue', type = 'checkbox', text = 'Beacon of Virtue', desc = '' },
         }
+    }
+
+
+
+
+    configWindow = dark_addon.interface.builder.buildGUI(settings)
+
+    dark_addon.interface.buttons.add_toggle({
+    name = 'DPS',
+    label = 'DPS',
+    on = {
+    label = 'DPS',
+    color = dark_addon.interface.color.orange,
+    color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
+    },
+    off = {
+    label = 'DPS',
+    color = dark_addon.interface.color.grey,
+    color2 = dark_addon.interface.color.dark_grey
+    }
     })
     dark_addon.interface.buttons.add_toggle({
-        name = 'DISPELL',
-        label = 'DISP',
-        on = {
-            label = 'DISP',
-            color = dark_addon.interface.color.orange,
-            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-        },
-        off = {
-            label = 'DISP',
-            color = dark_addon.interface.color.grey,
-            color2 = dark_addon.interface.color.dark_grey
-        }
+    name = 'DISPELL',
+    label = 'DISP',
+    on = {
+    label = 'DISP',
+    color = dark_addon.interface.color.orange,
+    color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
+    },
+    off = {
+    label = 'DISP',
+    color = dark_addon.interface.color.grey,
+    color2 = dark_addon.interface.color.dark_grey
+    }
     })
     dark_addon.interface.buttons.add_toggle({
-        name = 'BoP',
-        label = 'BoP',
-        on = {
-            label = 'BoP',
-            color = dark_addon.interface.color.orange,
-            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-        },
-        off = {
-            label = 'BoP',
-            color = dark_addon.interface.color.grey,
-            color2 = dark_addon.interface.color.dark_grey
-        }
+    name = 'BoP',
+    label = 'BoP',
+    on = {
+    label = 'BoP',
+    color = dark_addon.interface.color.orange,
+    color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
+    },
+    off = {
+    label = 'BoP',
+    color = dark_addon.interface.color.grey,
+    color2 = dark_addon.interface.color.dark_grey
+    }
     })
     dark_addon.interface.buttons.add_toggle({
-        name = 'Racial',
-        label = 'Racial',
-        on = {
-            label = 'Racial',
-            color = dark_addon.interface.color.orange,
-            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-        },
-        off = {
-            label = 'Racial',
-            color = dark_addon.interface.color.grey,
-            color2 = dark_addon.interface.color.dark_grey
-        }
+    name = 'LoD',
+    label = 'LightOfDawn',
+    on = {
+    label = 'LoD',
+    color = dark_addon.interface.color.orange,
+    color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
+    },
+    off = {
+    label = 'LoD',
+    color = dark_addon.interface.color.grey,
+    color2 = dark_addon.interface.color.dark_grey
+    }
     })
     dark_addon.interface.buttons.add_toggle({
-        name = 'LoD',
-        label = 'LightOfDawn',
-        on = {
-            label = 'LoD',
-            color = dark_addon.interface.color.orange,
-            color2 = dark_addon.interface.color.ratio(dark_addon.interface.color.dark_orange, 0.7)
-        },
-        off = {
-            label = 'LoD',
-            color = dark_addon.interface.color.grey,
-            color2 = dark_addon.interface.color.dark_grey
-        }
+    name = 'settings',
+    label = 'Rotation Settings',
+    font = 'dark_addon_icon',
+    on = {
+    label = dark_addon.interface.icon('cog'),
+    color = dark_addon.interface.color.cyan,
+    color2 = dark_addon.interface.color.dark_cyan
+    },
+    off = {
+    label = dark_addon.interface.icon('cog'),
+    color = dark_addon.interface.color.grey,
+    color2 = dark_addon.interface.color.dark_grey
+    },
+    callback = function (self)
+    if configWindow.parent:IsShown() then
+    configWindow.parent:Hide()
+    else
+    configWindow.parent:Show()
+    end
+    end
     })
 end
 
