@@ -7,3 +7,4 @@
 
 protpal.lua
 holypal.lua
+balpal.lua
