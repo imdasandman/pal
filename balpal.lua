@@ -150,22 +150,18 @@ local function combat()
     end
 
     -----------------------------
-    ---     Innervate/ Inno
+    ---     Innervate
     -----------------------------
-    local healer = (findHealer())
-
-    if toggle('Innervate', false) and IsInGroup() and -spell(SB.Innervate) == 0 then
-        if innervateTarget == player then
-            local healer = (findHealer())
-        else
-            local healer = innervateTarget
+    if not lastcast(SB.Innervate) and toggle('Innervate', false) and IsInGroup() and -spell(SB.Innervate) == 0 then
+        if innervateTarget == '' then
+            innervateTarget = (findHealer())
         end
+        -- if innervateTarget.castable(SB.Innervate) then   <---- this fails, castable does not like innervateTarget
         if tank.health.percent < 80 then
-            print("Innervate on " .. healer)
-            return cast(SB.Innervate, healer)
+            print("Innervate on " .. innervateTarget)
+            return cast(SB.Innervate, innervateTarget)
         end
     end
-
 
     -- print(z)
     --  if toggle('Innervate', false) and IsInGroup() and -spell(SB.Innervate) == 0 and z > 40 then
@@ -394,20 +390,23 @@ local function combat()
     end
 
     -----------------------------
-    --- Starlord
+    --- StarSurge / Starlord
     -----------------------------
 
 
-    if inRange <= aoeTarget and talent(5, 2) and target.castable(SB.Starsurge) then
+    if not modifier.shift and talent(5, 2 and inRange <= aoeTarget and target.castable(SB.Starsurge) then
         if player.buff(SB.Starlord).down then
             return cast(SB.Starsurge, target)
-        elseif player.buff(SB.Starlord).count < 3 and player.buff(SB.Starlord).remains > 10 then
+        elseif player.buff(SB.Starlord).count < 3 and player.buff(SB.Starlord).remains >= 8 then
             return cast(SB.Starsurge, 'target')
         elseif power.astral.actual >= 88 and player.buff(SB.Starlord).remains <= 7 then
             macro('/cancelaura Starlord')
             return cast(SB.Starsurge, 'target')
         end
+    elseif not modifier.shift and not talent(5, 2 and inRange <= aoeTarget and target.castable(SB.Starsurge) and player.buff(SB.LunarEmpowerment).count <= 2 and player.buff(SB.SolarEmpowerment).count <= 2 and power.astral.actual > 40 then
+        return cast(SB.Starsurge, 'target')
     end
+
 
     -----------------------------
     --- Standard Rotation
@@ -560,24 +559,6 @@ end
 
 
 
-
--- StarSurge for Soul of the forrest and Incarnation
-if not talent(5, 2) and not modifier.shift and inRange <= 2 and target.castable(SB.Starsurge) and player.buff(SB.LunarEmpowerment).count <= 2 and player.buff(SB.SolarEmpowerment).count <= 2 and power.astral.actual > 40 then
-    return cast(SB.Starsurge, 'target')
-end
-
---Starlord specific - maximizing haste without overcapping
-if talent(5, 2) and not modifier.shift and target.castable(SB.Starsurge) then
-    if player.buff(SB.Starlord).down then
-        return cast(SB.Starsurge, target)
-    elseif player.buff(SB.Starlord).count < 3 and player.buff(SB.Starlord).remains > 6 then
-        return cast(SB.Starsurge, 'target')
-    elseif player.buff(SB.LunarEmpowerment).count == 1 and player.buff(SB.SolarEmpowerment).count == 0 and power.astral.actual == 100 then
-        return cast(SB.Starsurge, 'target')
-    elseif power.astral.actual == 100 and player.buff(SB.Starlord).count == 3 and player.buff(SB.Starlord).remains >= 7 then
-        return cast(SB.Starsurge, 'target')
-    end
-end
 --nukes
 
 if talent(1, 2) then
@@ -694,7 +675,7 @@ function interface()
             { type = 'rule' },
             { type = 'text', text = 'Utility' },
             { key = 'autoRacial', type = 'checkbox', text = 'Racial', desc = 'Use Racial on CD (Blood Elf only)' },
-            { key = 'innoTarget', type = 'input', text = 'Inno Target (blank for auto)', desc = '' },
+            { key = 'innervateTarget', type = 'input', text = 'Inno Target (blank for auto)', desc = '' },
             { type = 'rule' },
             { key = 'arcanicPulsar', type = 'checkbox', text = 'Arcanic Pulsar', desc = 'This trait changes the rotation, do you have it?' },
         }
