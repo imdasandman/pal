@@ -5,6 +5,7 @@
 ## DefaultState: enabled
 ## Dependencies: dark_addon
 
-protpal.lua
-holypal.lua
-balpal.lua
+protpal.lua  -- Paladin Protection
+holypal.lua -- Paladin Holy
+balpal.lua -- Druid Balance
+respal.lua -- Druid Restoration
