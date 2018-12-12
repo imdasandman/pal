@@ -60,7 +60,7 @@ local function combat()
     local healthstonepercent = dark_addon.settings.fetch('balpal_settings_healthstone.spin')
     local autoRacial = dark_addon.settings.fetch('balpal_settings_autoRacial')
     local arcanicPulsar = dark_addon.settings.fetch('balpal_settings_arcanicPulsar')
-    local innervateTarget = dark_addon.settings.fetch('balpal_settings_innervateTarget')
+    innervateTarget = dark_addon.settings.fetch('balpal_settings_innervateTarget')
 
 
     -----------------------------
@@ -156,8 +156,8 @@ local function combat()
         if innervateTarget == '' then
             innervateTarget = (findHealer())
         end
-        -- if innervateTarget.castable(SB.Innervate) then   <---- this fails, castable does not like innervateTarget
-        if tank.health.percent < 80 then
+        if innervateTarget.castable(SB.Innervate) then   ---- this fails, castable does not like innervateTarget
+        --if tank.health.percent < 80 then
             print("Innervate on " .. innervateTarget)
             return cast(SB.Innervate, innervateTarget)
         end
