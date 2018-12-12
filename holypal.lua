@@ -569,7 +569,7 @@ end
 dark_addon.rotation.register({
     spec = dark_addon.rotation.classes.paladin.holy,
     name = 'holypal',
-    label = 'Haxxored',
+    label = 'PAL: Holy Paladin',
     combat = combat,
     resting = resting,
     interface = interface,
