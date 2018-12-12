@@ -394,7 +394,7 @@ local function combat()
     -----------------------------
 
 
-    if not modifier.shift and talent(5, 2 and inRange <= aoeTarget and target.castable(SB.Starsurge) then
+    if not modifier.shift and talent(5, 2) and inRange <= aoeTarget and target.castable(SB.Starsurge) then
         if player.buff(SB.Starlord).down then
             return cast(SB.Starsurge, target)
         elseif player.buff(SB.Starlord).count < 3 and player.buff(SB.Starlord).remains >= 8 then
