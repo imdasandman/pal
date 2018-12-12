@@ -149,13 +149,15 @@ local function combat()
     -----------------------------
     ---     Innervate/ Inno
     -----------------------------
+    local healer = (findHealer())
+
     if toggle('Innervate', false) and IsInGroup() and -spell(SB.Innervate) == 0 then
-        if innervateTarget == nill then
+        if innervateTarget == player then
             local healer = (findHealer())
         else
-            healer = innervateTarget
+            local healer = innervateTarget
         end
-        if healer.castable(SB.Innervate) and tank.health.percent < 80 then
+        if tank.health.percent < 80 then
             print("Innervate on " .. healer)
             return cast(SB.Innervate, healer)
         end
