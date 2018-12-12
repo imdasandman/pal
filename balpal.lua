@@ -9,6 +9,9 @@ local SB = dark_addon.rotation.spellbooks.druid
 local TB = dark_addon.rotation.talentbooks.druid
 local DS = dark_addon.rotation.dispellbooks.soothe
 
+--Spells not in spellbook
+SB.StellarDrift = 163222
+
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
 local realmName = GetRealmName()
@@ -175,14 +178,14 @@ local function combat()
     -----------------------------
     --- Moving!
     -----------------------------
-    --TODO add code for stellar drift
+
 
     -- Moonkin Form
     if not toggle('TANK', false) and not lastcast(SB.MoonkinForm) and player.buff(SB.TigerDashBuff).down and GetShapeshiftForm() ~= 4 then
         return cast(SB.MoonkinForm, player)
     end
 
-    if player.moving then
+    if player.moving and not player.buff(SB.StellarDrift) then
         if talent(1, 2) then
             if player.buff(SB.WarriorOfElune).up and target.castable(SB.LunarStrike) then
                 return cast(SB.LunarStrike, 'target')
