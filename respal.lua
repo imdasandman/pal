@@ -328,8 +328,8 @@ end
 --dark_addon.environment.hook(your_func)
 dark_addon.rotation.register({
   spec = dark_addon.rotation.classes.druid.restoration,
-  name = 'restoration',
-  label = 'Bundled Restoration Druid',
+  name = 'respal',
+  label = 'PAL - restoration druid',
   combat = combat,
   resting = resting,
   interface = interface

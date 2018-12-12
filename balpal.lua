@@ -177,7 +177,7 @@ local function combat()
 
 
     -- Moonkin Form
-    if not toggle('TANK', false) and not lastcast(SB.MoonkinForm) and not player.buff(SB.TigerDashBuff) and GetShapeshiftForm() ~= 4 then
+    if not toggle('TANK', false) and not lastcast(SB.MoonkinForm) and player.buff(SB.TigerDashBuff).down and GetShapeshiftForm() ~= 4 then
         return cast(SB.MoonkinForm, player)
     end
 
@@ -186,7 +186,7 @@ local function combat()
             if player.buff(SB.WarriorOfElune).up and target.castable(SB.LunarStrike) then
                 return cast(SB.LunarStrike, 'target')
             end
-            if not player.buff(SB.WarriorOfElune) and -spell(SB.WarriorOfElune) == 0 then
+            if player.buff(SB.WarriorOfElune).down and -spell(SB.WarriorOfElune) == 0 then
                 return cast(SB.WarriorOfElune, player)
             end
         end
@@ -395,7 +395,7 @@ local function combat()
 
 
     if not modifier.shift and talent(5, 2) and inRange <= aoeTarget and target.castable(SB.Starsurge) then
-        if not player.buff(SB.Starlord) then
+        if player.buff(SB.Starlord).down then
             return cast(SB.Starsurge, target)
         elseif player.buff(SB.Starlord).count < 3 and player.buff(SB.Starlord).remains >= 8 then
             return cast(SB.Starsurge, 'target')
@@ -429,14 +429,14 @@ local function combat()
     elseif target.castable(SB.LunarStrike) and inRange < 3 and power.astral.actual >= 40 and player.buff(SB.LunarEmpowerment).count == 2 and player.buff(SB.SolarEmpowerment).count == 2 then
         return cast(SB.LunarStrike, 'target')
     end
-    if target.castable(SB.SolarWrath) and player.buff(SB.SolarEmpowerment).count == 3 and power.astral.deficit > 12 and inRange < 3 and not player.buff(SB.Sunblaze) then
+    if target.castable(SB.SolarWrath) and player.buff(SB.SolarEmpowerment).count == 3 and power.astral.deficit > 12 and inRange < 3 and player.buff(SB.Sunblaze).down then
         return cast(SB.SolarWrath, 'target')
     end
 
     if target.castable(SB.LunarStrike) then
         if player.buff(SB.WarriorOfElune).up then
             return cast(SB.LunarStrike, 'target')
-        elseif inRange >= 3 and player.buff(SB.IncarnationBalance).up and player.buff(SB.LunarEmpowerment).count >= 1 and not player.buff(SB.DawningSun) then
+        elseif inRange >= 3 and player.buff(SB.IncarnationBalance).up and player.buff(SB.LunarEmpowerment).count >= 1 and player.buff(SB.DawningSun).down then
             return cast(SB.LunarStrike, 'target')
         end
     end
@@ -611,7 +611,7 @@ local function resting()
     z = 0
     if GetShapeshiftForm() == 3 and player.moving then
         return
-    elseif toggle('Forms', false) and not player.moving and not player.buff(SB.Prowl) and not player.buff(SB.MoonkinForm) and not player.buff(SB.TigerDashBuff) and not player.buff(SB.Dash) and player.alive then
+    elseif toggle('Forms', false) and not player.moving and player.buff(SB.Prowl).down and player.buff(SB.MoonkinForm).down and player.buff(SB.TigerDashBuff).down and player.buff(SB.Dash).down and player.alive then
         x = x + 1
         if x >= 14 then
             x = 0
