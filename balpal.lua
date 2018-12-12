@@ -403,7 +403,7 @@ local function combat()
             macro('/cancelaura Starlord')
             return cast(SB.Starsurge, 'target')
         end
-    elseif not modifier.shift and not talent(5, 2 and inRange <= aoeTarget and target.castable(SB.Starsurge) and player.buff(SB.LunarEmpowerment).count <= 2 and player.buff(SB.SolarEmpowerment).count <= 2 and power.astral.actual > 40 then
+    elseif not modifier.shift and not talent(5, 2) and inRange <= aoeTarget and target.castable(SB.Starsurge) and player.buff(SB.LunarEmpowerment).count <= 2 and player.buff(SB.SolarEmpowerment).count <= 2 then
         return cast(SB.Starsurge, 'target')
     end
 
