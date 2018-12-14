@@ -19,7 +19,6 @@ SB.DawningSun = 276152
 SB.Sunblaze = 274399
 SB.IncarnationBalance = 102560
 SB.FuryofElune = 202770
-SB.Starfall = 191034
 
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
@@ -374,7 +373,7 @@ local function combat()
     -----------------------------
     --- WarriorOfElune
     -----------------------------
-    if talent(1, 2) and -player.spell(SB.WarriorOfElune) == 0 then
+    if talent(1, 2) and -spell(SB.WarriorOfElune) == 0 and player.buff(SB.WarriorOfElune).down then
         return cast(SB.WarriorOfElune)
     end
 
@@ -397,7 +396,7 @@ local function combat()
             return cast(SB.Regrowth, player)
         end
 
-        if talent(2, 2) and -spell.castable(SB.Renewal) and player.health.percent < 50 then
+        if talent(2, 2) and -spell(SB.Renewal) == 0 and player.health.percent < 50 then
             return cast(SB.Renewal, player)
         end
     end
