@@ -18,6 +18,7 @@ SB.Berserking = 26297
 SB.DawningSun = 276152
 SB.Sunblaze = 274399
 SB.IncarnationBalance = 102560
+SB.FuryofElune = 202770
 
 
 local outdoor = IsOutdoors()
