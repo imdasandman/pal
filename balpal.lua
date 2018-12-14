@@ -20,7 +20,6 @@ SB.Sunblaze = 274399
 SB.IncarnationBalance = 102560
 SB.FuryofElune = 202770
 
-
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
 local realmName = GetRealmName()
@@ -690,22 +689,23 @@ local function resting()
             if player.health.percent < 20 and -spell(SB.Barkskin) == 0 then
                 return cast(SB.Barkskin, 'player')
             end
-
         end
-
+        local outdoor = IsOutdoors()
         if toggle('Forms', false) and player.moving then
             x = x + 1
-            local outdoor = IsOutdoors()
+
             if outdoor and x >= 8 then
                 x = 0
                 return cast(SB.TravelForm)
             end
+
+            if not outdoor and x >= 8 then
+                x = 0
+                return cast(SB.CatForm)
+            end
         end
 
-
     end
-
-
 end
 
 function interface()
