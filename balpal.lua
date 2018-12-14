@@ -19,6 +19,7 @@ SB.DawningSun = 276152
 SB.Sunblaze = 274399
 SB.IncarnationBalance = 102560
 SB.FuryofElune = 202770
+SB.Starfall = 191034
 
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
