@@ -11,6 +11,14 @@ local DS = dark_addon.rotation.dispellbooks.soothe
 
 --Spells not in spellbook
 SB.StellarDrift = 163222
+SB.TigerDashBuff = 252216
+SB.Starlord = 279709
+SB.CelestialAlignment = 194223
+SB.Berserking = 26297
+SB.DawningSun = 276152
+SB.Sunblaze = 274399
+SB.IncarnationBalance = 102560
+
 
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
@@ -39,6 +47,36 @@ local function findHealer()
     return 'player'
 end
 
+local function GCD()
+    if target.castable(SB.Sunfire) and power.astral.deficit > 7 and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 3.6) then
+        return cast(SB.Sunfire, 'target')
+    end
+    if target.castable(SB.Moonfire) and power.astral.deficit > 7 and (not target.debuff(SB.MoonfireDebuff).exists or target.debuff(SB.MoonfireDebuff).remains < 4.8) then
+        return cast(SB.Moonfire, 'target')
+    end
+    if talent(6, 3) and target.castable(SB.StellarFlare) and power.astral.deficit > 12 and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
+        return cast(SB.StellarFlare, 'target')
+    end
+
+    --nukes
+    if target.castable(SB.LunarStrike) and power.astral.deficit >= 16 and player.buff(SB.LunarEmpowerment).count == 3 then
+        return cast(SB.LunarStrike, 'target')
+    elseif target.castable(SB.LunarStrike) and inRange < 3 and power.astral.actual >= 40 and player.buff(SB.LunarEmpowerment).count == 2 and player.buff(SB.SolarEmpowerment).count == 2 then
+        return cast(SB.LunarStrike, 'target')
+    end
+    if target.castable(SB.SolarWrath) and player.buff(SB.SolarEmpowerment).count == 3 and power.astral.deficit > 12 and inRange < 3 and player.buff(SB.Sunblaze).down then
+        return cast(SB.SolarWrath, 'target')
+    end
+
+    if target.castable(SB.LunarStrike) then
+        if player.buff(SB.WarriorOfElune).up then
+            return cast(SB.LunarStrike, 'target')
+        elseif inRange >= 3 and player.buff(SB.IncarnationBalance).up and player.buff(SB.LunarEmpowerment).count >= 1 and player.buff(SB.DawningSun).down then
+            return cast(SB.LunarStrike, 'target')
+        end
+    end
+end
+
 --- Combat Rotation
 local function combat()
 
@@ -60,7 +98,7 @@ local function combat()
     local healthstonepercent = dark_addon.settings.fetch('balpal_settings_healthstone.spin')
     local autoRacial = dark_addon.settings.fetch('balpal_settings_autoRacial')
     local arcanicPulsar = dark_addon.settings.fetch('balpal_settings_arcanicPulsar')
-    innervateTarget = dark_addon.settings.fetch('balpal_settings_innervateTarget')
+    local innervateTarget = dark_addon.settings.fetch('balpal_settings_innervateTarget')
 
 
     -----------------------------
@@ -111,6 +149,10 @@ local function combat()
         inRange = 1
     end
 
+
+
+
+
     --print(inRange)
 
     if GetShapeshiftForm() == 3 or player.buff(SB.Prowl).up or player.buff(SB.TigerDashBuff).up or player.buff(SB.Dash).up or not player.alive then
@@ -152,12 +194,11 @@ local function combat()
     -----------------------------
     ---     Innervate
     -----------------------------
-    if not lastcast(SB.Innervate) and toggle('Innervate', false) and IsInGroup() and -spell(SB.Innervate) == 0 then
+    if toggle('Innervate', false) and IsInGroup() and -spell(SB.Innervate) == 0 then
         if innervateTarget == '' then
             innervateTarget = (findHealer())
         end
-        if innervateTarget.castable(SB.Innervate) then   ---- this fails, castable does not like innervateTarget
-        --if tank.health.percent < 80 then
+        if tank.health.percent < 80 then
             print("Innervate on " .. innervateTarget)
             return cast(SB.Innervate, innervateTarget)
         end
@@ -181,7 +222,7 @@ local function combat()
         return cast(SB.MoonkinForm, player)
     end
 
-    if player.moving and not player.buff(SB.StellarDrift) then
+    if player.moving and player.buff(SB.StellarDrift).down then
         if talent(1, 2) then
             if player.buff(SB.WarriorOfElune).up and target.castable(SB.LunarStrike) then
                 return cast(SB.LunarStrike, 'target')
@@ -367,7 +408,7 @@ local function combat()
     if toggle('cooldowns', false) and badguy ~= "normal" and badguy ~= "minus" then
         if talent(5, 3) and power.astral.actual > 40 and -spell(SB.IncarnationBalance) == 0 then
             return cast(SB.IncarnationBalance)
-        elseif talent(5, 2) and player.buff(SB.Starlord).count == 3 and power.astral.actual > 40 and -spell(SB.CelestialAlignment) == 0 then
+        elseif talent(5, 2) and player.buff(SB.Starlord).count >= 2 and power.astral.actual > 40 and -spell(SB.CelestialAlignment) == 0 then
             return cast(SB.CelestialAlignment)
         end
         if talent(7, 2) and talent(5, 3) and -player.spell(SB.FuryofElune) == 0 and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
@@ -399,7 +440,8 @@ local function combat()
             return cast(SB.Starsurge, target)
         elseif player.buff(SB.Starlord).count < 3 and player.buff(SB.Starlord).remains >= 8 then
             return cast(SB.Starsurge, 'target')
-        elseif power.astral.actual >= 88 and player.buff(SB.Starlord).remains <= 7 then
+        elseif power.astral.actual >= 87 and player.buff(SB.Starlord).remains <= 7 then
+            print("Cancelling Starlord with remaining time:" .. player.buff(SB.Starlord).remains)
             macro('/cancelaura Starlord')
             return cast(SB.Starsurge, 'target')
         end
@@ -411,6 +453,17 @@ local function combat()
     -----------------------------
     --- Standard Rotation
     -----------------------------
+
+    --racial
+    if autoRacial == true then
+        if talent(5, 3) and -player.spell(SB.Berserking) == 0 and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
+            cast(SB.Berserking, 'target')
+        end
+        if not talent(5, 3) and -player.spell(SB.Berserking) == 0 and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
+            cast(SB.Berserking, 'target')
+        end
+    end
+
 
     --dots
     if target.castable(SB.Sunfire) and power.astral.deficit > 7 and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 3.6) then
@@ -448,9 +501,8 @@ local function combat()
         return cast(SB.Moonfire, 'target')
     end
     return
-
-
 end
+
 
 
 
@@ -812,6 +864,7 @@ dark_addon.rotation.register({
     name = 'balpal',
     label = 'PAL: Balance Druide',
     combat = combat,
+    gcd = gcd,
     resting = resting,
     interface = interface
 })
