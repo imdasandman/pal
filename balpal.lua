@@ -20,8 +20,10 @@ SB.DawningSun = 276152
 SB.Sunblaze = 274399
 SB.IncarnationBalance = 102560
 SB.FuryofElune = 202770
+---
 SB.StellarFlare = 202347
 SB.Rebirth = 20484
+SB.RejuvenationGermination = 155777
 
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
@@ -102,7 +104,7 @@ local function combat()
     local autoRacial = dark_addon.settings.fetch('balpal_settings_autoRacial')
     local arcanicPulsar = dark_addon.settings.fetch('balpal_settings_arcanicPulsar')
     local innervateTarget = dark_addon.settings.fetch('balpal_settings_innervateTarget')
-
+    local autoPotion = dark_addon.settings.fetch('balpal_settings_autoPotion')
 
     -----------------------------
     --- Modifiers
@@ -176,14 +178,24 @@ local function combat()
         macro('/use Coastal Healing Potion')
     end
 
-    if IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(163222) >= 1 and GetItemCooldown(163222) == 0 then
+    --potions
+
+    if autoPotion == pot_b and IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(163222) >= 1 and GetItemCooldown(163222) == 0 then
         macro('/use Battle Potion of Intellect')
-        print("glug glug")
-        if autoRacial == true then
-            cast(SB.Berserking)
-        end
+        print("glug - battle potion of intellect glug")
+    end
+    if autoPotion == pot_c and IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(109218) >= 1 and GetItemCooldown(109218) == 0 then
+        macro('/use Draenic Intellect Potion')
+        print("glug - Draenic int -glug")
+    end
+        if autoPotion == pot_ and IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(127843) >= 1 and GetItemCooldown(127843) == 0 then
+        macro('/use Potion of deadly grace')
+        print("glug - deadly grace - glug")
     end
 
+    if autoRacial == true then
+        cast(SB.Berserking)
+    end
     -- Interupts
     if toggle('interrupts', false) and target.interrupt(intpercent) and target.distance <= 45 and -spell(SB.SolarBeam) == 0 then
         return cast(SB.SolarBeam, 'target')
@@ -675,6 +687,9 @@ local function resting()
     end
 
     if player.alive then
+        -- local autoPotion = dark_addon.settings.fetch('balpal_settings_autoPotion')
+        --    print(autoPotion)
+
         if toggle('Heal', false) then
             -- Swiftmend
             if player.castable(SB.Swiftmend) and player.health.percent < 50 and (not player.buff(SB.MoonkinForm).exists or player.health.percent < 30) then
@@ -733,7 +748,18 @@ function interface()
             { key = 'autoRacial', type = 'checkbox', text = 'Racial', desc = 'Use Racial on CD (Blood Elf only)' },
             { key = 'innervateTarget', type = 'input', text = 'Inno Target (blank for auto)', desc = '' },
             { type = 'rule' },
-            { key = 'arcanicPulsar', type = 'checkbox', text = 'Arcanic Pulsar', desc = 'This trait changes the rotation, do you have it?' },
+            { key = 'autoPotion', type = 'dropdown',
+              text = 'Potion',
+              desc = 'Potion to auto use',
+              default = 'pot_a',
+              list = {
+                  { key = 'pot_a', text = 'NONE' },
+                  { key = 'pot_b', text = 'Battle Potion of Intellect' },
+                  { key = 'pot_c', text = 'Draenic Intellect Potion' },
+              }
+            },
+
+
         }
     }
 
