@@ -745,7 +745,7 @@ function interface()
             { key = 'intpercent', type = 'spinner', text = 'Interrupt %', desc = '% cast time to interrupt at', min = 5, max = 100, step = 5 },
             { type = 'rule' },
             { type = 'text', text = 'Utility' },
-            { key = 'autoRacial', type = 'checkbox', text = 'Racial', desc = 'Use Racial on CD (Blood Elf only)' },
+            { key = 'autoRacial', type = 'checkbox', text = 'Racial', desc = 'Use Racial on CD (Troll only)' },
             { key = 'innervateTarget', type = 'input', text = 'Inno Target (blank for auto)', desc = '' },
             { type = 'rule' },
             { key = 'autoPotion', type = 'dropdown',
