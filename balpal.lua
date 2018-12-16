@@ -188,7 +188,7 @@ local function combat()
         macro('/use Draenic Intellect Potion')
         print("glug - Draenic int -glug")
     end
-        if autoPotion == pot_ and IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(127843) >= 1 and GetItemCooldown(127843) == 0 then
+    if autoPotion == pot_d and IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(127843) >= 1 and GetItemCooldown(127843) == 0 then
         macro('/use Potion of deadly grace')
         print("glug - deadly grace - glug")
     end
@@ -213,7 +213,7 @@ local function combat()
         if innervateTarget == '' then
             innervateTarget = (findHealer())
         end
-        if tank.health.percent < 80  and innervateTarget.inRange(40) then
+        if tank.health.percent < 80 and innervateTarget.inRange(40) then
             print("Innervate on " .. innervateTarget)
             return cast(SB.Innervate, innervateTarget)
         end
@@ -756,6 +756,7 @@ function interface()
                   { key = 'pot_a', text = 'NONE' },
                   { key = 'pot_b', text = 'Battle Potion of Intellect' },
                   { key = 'pot_c', text = 'Draenic Intellect Potion' },
+                  { key = 'pot_d', text = 'Potion of deadly grace' },
               }
             },
 
