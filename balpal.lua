@@ -28,7 +28,6 @@ SB.RejuvenationGermination = 155777
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
 local realmName = GetRealmName()
-local race = UnitRace("player")
 local x = 0 -- counting seconds in resting
 local y = 0 -- counter for opener
 local z = 0 -- time in combat
@@ -180,22 +179,21 @@ local function combat()
 
     --potions
 
-    if autoPotion == pot_b and IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(163222) >= 1 and GetItemCooldown(163222) == 0 then
+    if autoPotion == "pot_b" and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(163222) >= 1 and GetItemCooldown(163222) == 0 then
         macro('/use Battle Potion of Intellect')
         print("glug - battle potion of intellect glug")
     end
-    if autoPotion == pot_c and IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(109218) >= 1 and GetItemCooldown(109218) == 0 then
-        macro('/use Draenic Intellect Potion')
+    if autoPotion == "pot_c" and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(109218) >= 1 and GetItemCooldown(109218) == 0 then
         print("glug - Draenic int -glug")
+        macro('/use Draenic Intellect Potion')
     end
-    if autoPotion == pot_d and IsInRaid() and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(127843) >= 1 and GetItemCooldown(127843) == 0 then
-        macro('/use Potion of deadly grace')
+
+    if autoPotion == "pot_d" and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(152559) >= 1 and GetItemCooldown(152559) == 0 then
+        macro('/use Potion of rising death')
         print("glug - deadly grace - glug")
     end
 
-    if autoRacial == true then
-        cast(SB.Berserking)
-    end
+
     -- Interupts
     if toggle('interrupts', false) and target.interrupt(intpercent) and target.distance <= 45 and -spell(SB.SolarBeam) == 0 then
         return cast(SB.SolarBeam, 'target')
@@ -213,16 +211,24 @@ local function combat()
         if innervateTarget == '' then
             innervateTarget = (findHealer())
         end
-        if tank.health.percent < 80 and innervateTarget.inRange(40) then
+        if UnitInRange(innervateTarget) and UnitExists(innervateTarget) and tank.health.percent < 80 then
             print("Innervate on " .. innervateTarget)
             return cast(SB.Innervate, innervateTarget)
         end
     end
 
-    -- print(z)
-    --  if toggle('Innervate', false) and IsInGroup() and -spell(SB.Innervate) == 0 and z > 40 then
-    --      return macro("/cast [target=XXX] Innervate")
-    --  end
+    -----------------------------
+    --- Rotation
+    -----------------------------
+    if autoRace == true and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
+        if UnitRace("player") == "troll" then
+            cast(SB.Berserking)
+        end
+
+    end
+
+
+
     -----------------------------
     --- Rotation
     -----------------------------
@@ -456,7 +462,7 @@ local function combat()
         elseif player.buff(SB.Starlord).count < 3 and player.buff(SB.Starlord).remains >= 8 then
             return cast(SB.Starsurge, 'target')
         elseif power.astral.actual >= 87 and player.buff(SB.Starlord).remains <= 7 then
-            print("Cancelling Starlord with remaining time:" .. player.buff(SB.Starlord).remains)
+            -- print("Cancelling Starlord with remaining time:" .. player.buff(SB.Starlord).remains)
             macro('/cancelaura Starlord')
             return cast(SB.Starsurge, 'target')
         end
@@ -756,7 +762,7 @@ function interface()
                   { key = 'pot_a', text = 'NONE' },
                   { key = 'pot_b', text = 'Battle Potion of Intellect' },
                   { key = 'pot_c', text = 'Draenic Intellect Potion' },
-                  { key = 'pot_d', text = 'Potion of deadly grace' },
+                  { key = 'pot_d', text = 'Potion of rising death' },
               }
             },
 
