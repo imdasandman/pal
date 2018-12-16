@@ -24,6 +24,7 @@ SB.FuryofElune = 202770
 SB.StellarFlare = 202347
 SB.Rebirth = 20484
 SB.RejuvenationGermination = 155777
+SB.ForceofNature = 205636
 
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
@@ -220,10 +221,10 @@ local function combat()
     -----------------------------
     --- Racial active ability
     -----------------------------
-    if autoRace == true and UnitRace("player") == "troll" and not talent(5, 3) and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
+    if autoRacial == true and UnitRace("player") == "troll" and not talent(5, 3) and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
         cast(SB.Berserking)
     end
-    if autoRace == true and UnitRace("player") == "troll" and talent(5, 3) and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
+    if autoRacial == true and UnitRace("player") == "troll" and talent(5, 3) and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
         cast(SB.Berserking)
     end
 
@@ -673,6 +674,7 @@ if mobsinRange > 1 then
 end
 ]]
 local function resting()
+
 
     y = 0
     z = 0
