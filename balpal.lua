@@ -218,15 +218,14 @@ local function combat()
     end
 
     -----------------------------
-    --- Rotation
+    --- Racial active ability
     -----------------------------
-    if autoRace == true and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
-        if UnitRace("player") == "troll" then
-            cast(SB.Berserking)
-        end
-
+    if autoRace == true and UnitRace("player") == "troll" and not talent(5, 3) and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
+        cast(SB.Berserking)
     end
-
+    if autoRace == true and UnitRace("player") == "troll" and talent(5, 3) and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
+        cast(SB.Berserking)
+    end
 
 
     -----------------------------
@@ -236,7 +235,6 @@ local function combat()
     -----------------------------
     --- Moving!
     -----------------------------
-
 
     -- Moonkin Form
     if not toggle('TANK', false) and not lastcast(SB.MoonkinForm) and player.buff(SB.TigerDashBuff).down and GetShapeshiftForm() ~= 4 then
@@ -475,16 +473,6 @@ local function combat()
     --- Standard Rotation
     -----------------------------
 
-    --racial
-    if autoRacial == true then
-        if talent(5, 3) and -player.spell(SB.Berserking) == 0 and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
-            cast(SB.Berserking, 'target')
-        end
-        if not talent(5, 3) and -player.spell(SB.Berserking) == 0 and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
-            cast(SB.Berserking, 'target')
-        end
-    end
-
 
     --dots
     if target.castable(SB.Sunfire) and power.astral.deficit > 7 and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 3.6) then
@@ -514,13 +502,19 @@ local function combat()
             return cast(SB.LunarStrike, 'target')
         end
     end
-
+    if target.castable(SB.Starsurge) then
+        return cast(SB.Starsurge, 'target')
+    end
     if target.castable(SB.SolarWrath) then
         return cast(SB.SolarWrath, 'target')
+    end
+    if target.castable(SB.LunarStrike) then
+        return cast(SB.LunarStrike, 'target')
     end
     if target.castable(SB.Moonfire) then
         return cast(SB.Moonfire, 'target')
     end
+
     return
 end
 
