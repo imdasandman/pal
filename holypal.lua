@@ -17,14 +17,25 @@ local TB = dark_addon.rotation.spellbooks.paladin
 local DB = dark_addon.rotation.spellbooks.paladin
 local race = UnitRace("player")
 
+SB.Quake = 240447
 
 -- enable to treat tank like everyone else - all 'tank' statements will be ignored
 --dark_addon.environment.virtual.exclude_tanks = false
 
+local function GCD()
 
+    if player.debuff(SB.Quake).up and player.debuff(SB.Quake).remains < 0.5 then
+        print(player.debuff(SB.Quake).remains)
+        macro('/stopcasting')
+    end
+end
 local function combat()
     if not player.alive or player.buff(SB.Refreshment).up or player.buff(SB.Drink).up then
         return
+    end
+
+    if player.debuff(SB.Quake).remains < 0.5 then
+        macro('/stopcasting')
     end
 
     -----------------------------
@@ -570,6 +581,7 @@ dark_addon.rotation.register({
     spec = dark_addon.rotation.classes.paladin.holy,
     name = 'holypal',
     label = 'PAL: Holy Paladin',
+    gcd = GCD,
     combat = combat,
     resting = resting,
     interface = interface,

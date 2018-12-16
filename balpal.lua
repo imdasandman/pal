@@ -1,6 +1,7 @@
 -- Balance Druid for 8.1 by Laksmackt - 10/2018
 -- Talents: 3132222  or wahtever ...most works
--- Holding Alt = Treants
+-- Holding Right Alt = Treants spawn at your mousecursor
+-- Holding Left Alt = bear form and defensive (for as long as you hold it down)
 -- Holding Shift = Starfall (will halt starsurge)
 -- Holding CONTROL = Battle Rez (works w/ raid frames)
 
@@ -20,6 +21,7 @@ SB.Sunblaze = 274399
 SB.IncarnationBalance = 102560
 SB.FuryofElune = 202770
 SB.StellarFlare = 202347
+SB.Rebirth = 20484
 
 local outdoor = IsOutdoors()
 local indoor = IsIndoors()
