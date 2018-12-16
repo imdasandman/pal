@@ -142,23 +142,23 @@ local function combat()
     -----------------------------
     --- Determine mobs in range (not 100% right)
     -----------------------------
-    local inRange = 0
+    local mobsinRange = 0
 
     if toggle('multitarget', false) then
         for i = 1, 40 do
             if UnitExists('nameplate' .. i) and IsSpellInRange('Moonfire', 'nameplate' .. i) == 1 and UnitAffectingCombat('nameplate' .. i) then
-                inRange = inRange + 1
+                mobsinRange = mobsinRange + 1
             end
         end
     else
-        inRange = 1
+        mobsinRange = 1
     end
 
 
 
 
 
-    --print(inRange)
+    --print(mobsinRange)
 
     if GetShapeshiftForm() == 3 or player.buff(SB.Prowl).up or player.buff(SB.TigerDashBuff).up or player.buff(SB.Dash).up or not player.alive then
         return
@@ -213,7 +213,7 @@ local function combat()
         if innervateTarget == '' then
             innervateTarget = (findHealer())
         end
-        if tank.health.percent < 80 then
+        if tank.health.percent < 80  and innervateTarget.inRange(40) then
             print("Innervate on " .. innervateTarget)
             return cast(SB.Innervate, innervateTarget)
         end
@@ -450,7 +450,7 @@ local function combat()
     -----------------------------
 
 
-    if not modifier.shift and talent(5, 2) and inRange <= aoeTarget and target.castable(SB.Starsurge) then
+    if not modifier.shift and talent(5, 2) and mobsinRange <= aoeTarget and target.castable(SB.Starsurge) then
         if player.buff(SB.Starlord).down then
             return cast(SB.Starsurge, target)
         elseif player.buff(SB.Starlord).count < 3 and player.buff(SB.Starlord).remains >= 8 then
@@ -460,7 +460,7 @@ local function combat()
             macro('/cancelaura Starlord')
             return cast(SB.Starsurge, 'target')
         end
-    elseif not modifier.shift and not talent(5, 2) and inRange <= aoeTarget and target.castable(SB.Starsurge) and player.buff(SB.LunarEmpowerment).count <= 2 and player.buff(SB.SolarEmpowerment).count <= 2 then
+    elseif not modifier.shift and not talent(5, 2) and mobsinRange <= aoeTarget and target.castable(SB.Starsurge) and player.buff(SB.LunarEmpowerment).count <= 2 and player.buff(SB.SolarEmpowerment).count <= 2 then
         return cast(SB.Starsurge, 'target')
     end
 
@@ -494,17 +494,17 @@ local function combat()
     --nukes
     if target.castable(SB.LunarStrike) and power.astral.deficit >= 16 and player.buff(SB.LunarEmpowerment).count == 3 then
         return cast(SB.LunarStrike, 'target')
-    elseif target.castable(SB.LunarStrike) and inRange < 3 and power.astral.actual >= 40 and player.buff(SB.LunarEmpowerment).count == 2 and player.buff(SB.SolarEmpowerment).count == 2 then
+    elseif target.castable(SB.LunarStrike) and mobsinRange < 3 and power.astral.actual >= 40 and player.buff(SB.LunarEmpowerment).count == 2 and player.buff(SB.SolarEmpowerment).count == 2 then
         return cast(SB.LunarStrike, 'target')
     end
-    if target.castable(SB.SolarWrath) and player.buff(SB.SolarEmpowerment).count == 3 and power.astral.deficit > 12 and inRange < 3 and player.buff(SB.Sunblaze).down then
+    if target.castable(SB.SolarWrath) and player.buff(SB.SolarEmpowerment).count == 3 and power.astral.deficit > 12 and mobsinRange < 3 and player.buff(SB.Sunblaze).down then
         return cast(SB.SolarWrath, 'target')
     end
 
     if target.castable(SB.LunarStrike) then
         if player.buff(SB.WarriorOfElune).up then
             return cast(SB.LunarStrike, 'target')
-        elseif inRange >= 3 and player.buff(SB.IncarnationBalance).up and player.buff(SB.LunarEmpowerment).count >= 1 and player.buff(SB.DawningSun).down then
+        elseif mobsinRange >= 3 and player.buff(SB.IncarnationBalance).up and player.buff(SB.LunarEmpowerment).count >= 1 and player.buff(SB.DawningSun).down then
             return cast(SB.LunarStrike, 'target')
         end
     end
@@ -638,7 +638,7 @@ if talent(1, 2) then
 end
 
 --if toggle('multitarget', true) then
-if inRange <= 1 then
+if mobsinRange <= 1 then
     --print("solo target")
     if target.castable(SB.SolarWrath) and player.buff(SB.SolarEmpowerment).count >= 1 then
         return cast(SB.SolarWrath, 'target')
@@ -656,7 +656,7 @@ if inRange <= 1 then
 end
 
 --if toggle('multitarget', false) then
-if inRange > 1 then
+if mobsinRange > 1 then
     --print("multi target")
     if target.castable(SB.LunarStrike) and player.buff(SB.LunarEmpowerment).count >= 1 then
         return cast(SB.LunarStrike, 'target')
