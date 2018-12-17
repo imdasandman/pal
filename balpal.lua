@@ -97,6 +97,7 @@ local function combat()
     -----------------------------
     local intpercent = dark_addon.settings.fetch('balpal_settings_intpercent')
     local usehealthstone = dark_addon.settings.fetch('balpal_settings_healthstone.check')
+    local usehealpot = dark_addon.settings.fetch('balpal_settings_usehealpot')
     local healthstonepercent = dark_addon.settings.fetch('balpal_settings_healthstone.spin')
     local autoRacial = dark_addon.settings.fetch('balpal_settings_autoRacial')
     local arcanicPulsar = dark_addon.settings.fetch('balpal_settings_arcanicPulsar')
@@ -171,7 +172,7 @@ local function combat()
         macro('/use Healthstone')
     end
     --health pot
-    if player.health.percent < 35 and GetItemCooldown(5512) > 0 then
+    if usehealpot == true and GetItemCount(152494) >= 1 and player.health.percent < healthstonepercent and GetItemCooldown(5512) > 0 then
         macro('/use Coastal Healing Potion')
     end
 
@@ -738,6 +739,7 @@ function interface()
             { type = 'text', text = 'General Settings' },
             { key = 'healthstone', type = 'checkspin', default = '30', text = 'Healthstone', desc = 'Auto use Healthstone at health %', min = 5, max = 100, step = 5 },
             -- { key = 'input', type = 'input', text = 'TextBox', desc = 'Description of Textbox' },
+            { key = 'usehealpot', type = 'checkbox', text = 'Healing Pot', desc = 'Use Coastal Healing Potion if HS on CD/none' },
             { key = 'intpercent', type = 'spinner', text = 'Interrupt %', default = '50', desc = '% cast time to interrupt at', min = 5, max = 100, step = 5 },
             { type = 'rule' },
             { type = 'text', text = 'Utility' },
