@@ -21,7 +21,7 @@ SB.HealingTideTotem = 108280
 SB.HealingWave = 77472
 SB.CapacitorTotem = 125720
 SB.SpiritLink = 98008
-
+SB.LightningBoltRestoration = 403
 local function combat()
     if not player.alive then
         return
