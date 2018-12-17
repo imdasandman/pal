@@ -742,7 +742,7 @@ function interface()
             { type = 'rule' },
             { type = 'text', text = 'Utility' },
             { key = 'autoRacial', type = 'checkbox', text = 'Racial', desc = 'Use Racial on CD (Troll only)' },
-            { key = 'innervateTarget', type = 'input', text = 'Inno Target (blank for auto)', desc = '' },
+            { key = 'innervateTarget', type = 'input', default = '', text = 'Inno Target (blank for auto)', desc = '' },
             { type = 'rule' },
             { key = 'autoPotion', type = 'dropdown',
               text = 'Potion',
