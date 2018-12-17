@@ -1,4 +1,4 @@
-local addon, dark_addon = ...
+local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.shaman
 
 local function combat()

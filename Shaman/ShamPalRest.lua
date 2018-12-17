@@ -2,12 +2,12 @@
 
 -- Talents supported:
 
---Holding Shift = Hammer of Justice in combat / CC out of combat (if repentance talent is selected)
+--Holding Shift =
 --Holding CTRL = decurse (at mouseover target - works with raidframes)
---Holding LEFT ALT = Dawn of Light
+--Holding LEFT ALT =
 
 
-local addon, dark_addon = ...
+local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.shaman
 local TB = dark_addon.rotation.spellbooks.shaman
 local DB = dark_addon.rotation.spellbooks.shaman
