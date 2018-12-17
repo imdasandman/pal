@@ -90,7 +90,7 @@ local function combat()
         if mouseover.alive and castable(SB.PurifySpirit) then
             return cast(SB.PurifySpirit, 'mouseover')
 
-        elseif not mouseover.alive and -spell(SB.AncestralVision) == 0 then
+        elseif not mouseover.alive and castable(SB.AncestralVision)then
             return cast(SB.AncestralVision)
         end
     end
@@ -152,7 +152,7 @@ local function combat()
         return cast(SB.HealingTideTotem)
     end
 
-    if toggle('cooldowns', false) and (SB.HealingTideTotem) > 0 and -spell(SB.Ascendance) == 0 and (lowest.health.percent <= 20 or tank.health.percent <= 35 or group_health_percent < 40) then
+    if toggle('cooldowns', false) and (SB.HealingTideTotem) > 0 and castable(SB.Ascendance) and (lowest.health.percent <= 20 or tank.health.percent <= 35 or group_health_percent < 40) then
         print 'CD - Healing Tide'
         return cast(SB.Ascendance)
     end
@@ -228,7 +228,7 @@ local function combat()
     end
 
 
-
+--[[
     -- uncomment if not blood elf - using racial trait on CD for mana ... make sure to turn this off in Kings Rest if group depend on you for dispell
     if toggle('Racial', false) and race == "Blood Elf" and player.power.mana.percent < 90 and -spell(SB.ArcaneTorrent) == 0 then
         --print (race)
@@ -236,7 +236,7 @@ local function combat()
     end
 
 end
-
+]]
 local function resting()
     if player.alive then
         --  if  tank.range < 40 and (tank.buff(SB.EarthShield).down or tank.buff(SB.EarthShield).count <= 2) then
