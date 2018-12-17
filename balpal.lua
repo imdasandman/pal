@@ -26,9 +26,6 @@ SB.Rebirth = 20484
 SB.RejuvenationGermination = 155777
 SB.ForceofNature = 205636
 
-local outdoor = IsOutdoors()
-local indoor = IsIndoors()
-local realmName = GetRealmName()
 local x = 0 -- counting seconds in resting
 local y = 0 -- counter for opener
 local z = 0 -- time in combat
@@ -443,7 +440,7 @@ local function combat()
     --- Treants
     -----------------------------
 
-    if talent(1, 3) and toggle('FON', false) and -spell(SB.ForceofNature) == 0 and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
+    if talent(1, 3) and toggle('FON', false) and -spell(SB.ForceofNature) == 0 and mouseover.alive and mouseover.enemy then
         return cast(SB.ForceofNature, 'ground')
     end
 
@@ -739,9 +736,9 @@ function interface()
             { type = 'text', text = 'Everything on the screen is LIVE.  As you make changes, they are being fed to the engine.' },
             { type = 'rule' },
             { type = 'text', text = 'General Settings' },
-            { key = 'healthstone', type = 'checkspin', text = 'Healthstone', desc = 'Auto use Healthstone at health %', min = 5, max = 100, step = 5 },
+            { key = 'healthstone', type = 'checkspin', default = '30', text = 'Healthstone', desc = 'Auto use Healthstone at health %', min = 5, max = 100, step = 5 },
             -- { key = 'input', type = 'input', text = 'TextBox', desc = 'Description of Textbox' },
-            { key = 'intpercent', type = 'spinner', text = 'Interrupt %', desc = '% cast time to interrupt at', min = 5, max = 100, step = 5 },
+            { key = 'intpercent', type = 'spinner', text = 'Interrupt %', default = '50', desc = '% cast time to interrupt at', min = 5, max = 100, step = 5 },
             { type = 'rule' },
             { type = 'text', text = 'Utility' },
             { key = 'autoRacial', type = 'checkbox', text = 'Racial', desc = 'Use Racial on CD (Troll only)' },
