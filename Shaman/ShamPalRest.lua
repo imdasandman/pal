@@ -233,7 +233,7 @@ local function combat()
 end
 
 local function resting()
-  if player.alive and player.buff(SB.Refreshment).down and player.buff(SB.Drink).down then
+  if player.alive then
   --  if  tank.range < 40 and (tank.buff(SB.EarthShield).down or tank.buff(SB.EarthShield).count <= 2) then
   --  return cast(SB.EarthShield, tank)
   --elseif tank.range >= 40 then
@@ -348,8 +348,8 @@ end
 
 dark_addon.rotation.register({
   spec = dark_addon.rotation.classes.shaman.restoration,
-  name = 'restoration',
-  label = 'restoration shaman',
+  name = 'ShamPalRest',
+  label = 'restoration shaman - not updated for 8.1',
   combat = combat,
   resting = resting,
   interface = interface,
