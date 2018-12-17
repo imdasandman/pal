@@ -9,3 +9,6 @@ protpal.lua
 holypal.lua
 balpal.lua
 respal.lua
+
+Shaman\ShamPalRest.lua
+Shaman\ShamPalEle.lua
