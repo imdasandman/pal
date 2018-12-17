@@ -22,6 +22,13 @@ SB.HealingWave = 77472
 SB.CapacitorTotem = 125720
 SB.SpiritLink = 98008
 SB.LightningBoltRestoration = 403
+SB.EarthenWallTotem = 198838
+SB.AncestralVision = 212048
+SB.HealingTideTotem = 108280
+SB.ChainHeal = 1064
+SB.AscendanceResto = 114052
+SB.HealingWave = 77472
+
 local function combat()
     if not player.alive then
         return
@@ -64,7 +71,7 @@ local function combat()
      if GetItemCooldown(160649) == 0 and tank.health.percent < 95 then
        macro('/use [help] 14; [@targettarget] 14')
      end
-   ]]
+    ]]
 
     --------------------
     ---  Modifiers
@@ -154,7 +161,7 @@ local function combat()
 
     if toggle('cooldowns', false) and (SB.HealingTideTotem) > 0 and castable(SB.Ascendance) and (lowest.health.percent <= 20 or tank.health.percent <= 35 or group_health_percent < 40) then
         print 'CD - Healing Tide'
-        return cast(SB.Ascendance)
+        return cast(SB.AscendanceResto)
     end
 
     -- defensive cooldowns
@@ -164,7 +171,6 @@ local function combat()
     if target.enemy and castable(SB.FlameShock) and (not target.debuff(SB.FlameShock) or target.debuff(SB.FlameShock).remains <= 6) then
         return cast(SB.FlameShock)
     end
-
 
 
     --- Healing - Riptide
@@ -202,7 +208,6 @@ local function combat()
     if tank.castable(SB.HealingSurge) and tank.health.percent < 60 then
         return cast(SB.HealingSurge, tank)
     end
-
 
 
     ---Use HealingWave
