@@ -446,9 +446,6 @@ local function combat()
     if talent(1, 3) and toggle('FON', false) and -spell(SB.ForceofNature) == 0 and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
         return cast(SB.ForceofNature, 'ground')
     end
-    if talent(1, 3) and toggle('FON', false) and toggle('cooldowns', true) and -spell(SB.ForceofNature) == 0 then
-        return cast(SB.ForceofNature, 'ground')
-    end
 
     -----------------------------
     --- StarSurge / Starlord
