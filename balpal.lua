@@ -29,7 +29,7 @@ SB.ForceofNature = 205636
 local x = 0 -- counting seconds in resting
 local y = 0 -- counter for opener
 local z = 0 -- time in combat
-
+autoRacial = "true"
 
 local function GroupType()
     return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
@@ -219,10 +219,10 @@ local function combat()
     -----------------------------
     --- Racial active ability
     -----------------------------
-    if autoRacial == true and UnitRace("player") == "troll" and not talent(5, 3) and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
+    if not talent(5, 3) and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
         cast(SB.Berserking)
     end
-    if autoRacial == true and UnitRace("player") == "troll" and talent(5, 3) and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
+    if talent(5, 3) and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
         cast(SB.Berserking)
     end
 
