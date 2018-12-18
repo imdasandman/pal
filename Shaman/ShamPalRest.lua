@@ -1,11 +1,22 @@
 -- Restoration Shaman
 
--- Talents supported:
+--[[ Talents supported:
 
---Holding Shift =
---Holding CTRL = decurse (at mouseover target - works with raidframes)
---Holding LEFT ALT =
+ 15: 1 2
+ 30: 1 2 3
+ 45: 1 2 3 (earthgrab totem must be placed manually)
+ 60: 1 2 3 (Ancestral totem must be placed manually)
+ 75: 1 2 3 (Windrush Totem must be placed manually)
+ 90: 1
+100: 1  3 (wellspring wont break rotation, but is not automated)
 
+
+--Holding RIGHT Shift = Healing Rain at cursor
+--Holding LEFT Shift = Earth Wall Totem (if talented)
+--Holding CTRL = decurse (at mouseover target - works with raidframes) in combat - works as REZ if used on a dead target out of combat
+--Holding LEFT ALT = Stun totem at cursor
+--Holding RIGHT ALT = Spirit link totem at cursor
+]]
 
 local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.shaman
@@ -28,6 +39,11 @@ SB.HealingTideTotem = 108280
 SB.ChainHeal = 1064
 SB.AscendanceResto = 114052
 SB.HealingWave = 77472
+
+local function GroupType()
+    return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
+end
+
 
 local function combat()
     if not player.alive then
@@ -244,12 +260,11 @@ end
 
 local function resting()
     if player.alive then
-        --  if  tank.range < 40 and (tank.buff(SB.EarthShield).down or tank.buff(SB.EarthShield).count <= 2) then
-        --  return cast(SB.EarthShield, tank)
-        --elseif tank.range >= 40 then
-        --    return cast(SB.EarthShield, player)
-        -- end
 
+
+        if talent(2, 3) and tank.distance < 40 and (tank.buff(SB.EarthShield).down or tank.buff(SB.EarthShield).count <= 2) then
+            return cast(SB.EarthShield, tank)
+        end
         --------------------
         ---  Modifiers
         --------------------
