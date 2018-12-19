@@ -29,7 +29,7 @@ SB.ForceofNature = 205636
 local x = 0 -- counting seconds in resting
 local y = 0 -- counter for opener
 local z = 0 -- time in combat
-autoRacial = "true"
+
 
 local function GroupType()
     return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
@@ -103,6 +103,7 @@ local function combat()
     local arcanicPulsar = dark_addon.settings.fetch('balpal_settings_arcanicPulsar')
     local innervateTarget = dark_addon.settings.fetch('balpal_settings_innervateTarget')
     local autoPotion = dark_addon.settings.fetch('balpal_settings_autoPotion')
+
 
     -----------------------------
     --- Modifiers
@@ -200,7 +201,7 @@ local function combat()
 
     -- Barkskin
     if player.health.percent < 65 and -spell(SB.Barkskin) == 0 then
-        return cast(SB.Barkskin, 'player')
+        cast(SB.Barkskin, 'player')
     end
 
     -----------------------------
@@ -219,10 +220,10 @@ local function combat()
     -----------------------------
     --- Racial active ability
     -----------------------------
-    if not talent(5, 3) and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
+    if autoRacial == true and not talent(5, 3) and (player.buff(SB.CelestialAlignment).up or -spell(SB.CelestialAlignment) > 30) then
         cast(SB.Berserking)
     end
-    if talent(5, 3) and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
+    if autoRacial == true and talent(5, 3) and (player.buff(SB.IncarnationBalance).up or -spell(SB.IncarnationBalance) > 30) then
         cast(SB.Berserking)
     end
 
@@ -498,9 +499,7 @@ local function combat()
             return cast(SB.LunarStrike, 'target')
         end
     end
-    if target.castable(SB.Starsurge) then
-        return cast(SB.Starsurge, 'target')
-    end
+
     if target.castable(SB.SolarWrath) then
         return cast(SB.SolarWrath, 'target')
     end
@@ -744,6 +743,9 @@ function interface()
             { type = 'rule' },
             { type = 'text', text = 'Utility' },
             { key = 'autoRacial', type = 'checkbox', text = 'Racial', desc = 'Use Racial on CD (Troll only)' },
+            { key = 'arcanicPulsar', type = 'checkbox', text = 'Arcanic Pulsar', desc = 'Arcanic Pulsar - this changes the rotation, do you have it?' },
+
+
             { key = 'innervateTarget', type = 'input', default = '', text = 'Inno Target (blank for auto)', desc = '' },
             { type = 'rule' },
             { key = 'autoPotion', type = 'dropdown',
