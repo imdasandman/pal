@@ -298,7 +298,7 @@ local function resting()
 
     end
 end
-function interface()
+local function interface()
     dark_addon.interface.buttons.add_toggle({
         name = 'DPS',
         label = 'DPS',
