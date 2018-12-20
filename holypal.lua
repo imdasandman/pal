@@ -462,7 +462,7 @@ local function resting()
 
 end
 
-function interface()
+local function interface()
     local settings = {
         key = 'holypal_settings',
         title = 'Holy Paladin',
