@@ -152,7 +152,7 @@ local function resting()
 
 end
 
-function interface()
+local function interface()
 end
 
 dark_addon.rotation.register({
