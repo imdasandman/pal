@@ -50,33 +50,6 @@ local function findHealer()
 end
 
 local function GCD()
-    if target.castable(SB.Sunfire) and power.astral.deficit > 7 and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 3.6) then
-        return cast(SB.Sunfire, 'target')
-    end
-    if target.castable(SB.Moonfire) and power.astral.deficit > 7 and (not target.debuff(SB.MoonfireDebuff).exists or target.debuff(SB.MoonfireDebuff).remains < 4.8) then
-        return cast(SB.Moonfire, 'target')
-    end
-    if talent(6, 3) and target.castable(SB.StellarFlare) and power.astral.deficit > 12 and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
-        return cast(SB.StellarFlare, 'target')
-    end
-
-    --nukes
-    if target.castable(SB.LunarStrike) and power.astral.deficit >= 16 and player.buff(SB.LunarEmpowerment).count == 3 then
-        return cast(SB.LunarStrike, 'target')
-    elseif target.castable(SB.LunarStrike) and inRange < 3 and power.astral.actual >= 40 and player.buff(SB.LunarEmpowerment).count == 2 and player.buff(SB.SolarEmpowerment).count == 2 then
-        return cast(SB.LunarStrike, 'target')
-    end
-    if target.castable(SB.SolarWrath) and player.buff(SB.SolarEmpowerment).count == 3 and power.astral.deficit > 12 and inRange < 3 and player.buff(SB.Sunblaze).down then
-        return cast(SB.SolarWrath, 'target')
-    end
-
-    if target.castable(SB.LunarStrike) then
-        if player.buff(SB.WarriorOfElune).up then
-            return cast(SB.LunarStrike, 'target')
-        elseif inRange >= 3 and player.buff(SB.IncarnationBalance).up and player.buff(SB.LunarEmpowerment).count >= 1 and player.buff(SB.DawningSun).down then
-            return cast(SB.LunarStrike, 'target')
-        end
-    end
 end
 
 --- Combat Rotation
@@ -181,10 +154,10 @@ local function combat()
 
     if autoPotion == "pot_b" and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(163222) >= 1 and GetItemCooldown(163222) == 0 then
         macro('/use Battle Potion of Intellect')
-        print("glug - battle potion of intellect glug")
+        print("glug - battle potion of intellect - glug")
     end
     if autoPotion == "pot_c" and (player.buff(SB.IncarnationBalance).up or player.buff(SB.CelestialAlignment).up) and GetItemCount(109218) >= 1 and GetItemCooldown(109218) == 0 then
-        print("glug - Draenic int -glug")
+        print("glug - Draenic int - glug")
         macro('/use Draenic Intellect Potion')
     end
 
@@ -237,7 +210,7 @@ local function combat()
     -----------------------------
 
     -- Moonkin Form
-    if not toggle('TANK', false) and not lastcast(SB.MoonkinForm) and player.buff(SB.TigerDashBuff).down and GetShapeshiftForm() ~= 4 then
+    if not modifier.lalt and not lastcast(SB.MoonkinForm) and player.buff(SB.TigerDashBuff).down and GetShapeshiftForm() ~= 4 then
         return cast(SB.MoonkinForm, player)
     end
 
@@ -287,8 +260,6 @@ local function combat()
         end
 
         if player.buff(SB.Starlord).count <= 2 and y == 1 then
-
-
             if target.castable(SB.Starsurge) then
                 return cast(SB.Starsurge, 'target')
             end
@@ -722,7 +693,7 @@ local function resting()
     end
 end
 
-function interface()
+local function interface()
 
     local settings = {
         key = 'balpal_settings',
