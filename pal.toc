@@ -1,5 +1,5 @@
-## Title: Dark Template
-## Notes: An example addon.
+## Title: Pal
+## Notes: Everyone needs a pal
 ## Interface: 80100
 ## LoadOnDemand: 0
 ## DefaultState: enabled
@@ -9,6 +9,7 @@ protpal.lua
 holypal.lua
 balpal.lua
 respal.lua
+balanceEXP.lua
 
 Shaman\ShamPalRest.lua
 Shaman\ShamPalEle.lua
