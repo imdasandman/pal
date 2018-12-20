@@ -284,7 +284,7 @@ local function resting()
 
 end
 
-function interface()
+local function interface()
     dark_addon.interface.buttons.add_toggle({
         name = 'IronBark',
         label = 'IronBark',
