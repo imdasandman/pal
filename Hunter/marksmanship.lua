@@ -104,7 +104,7 @@ end
 
 
 dark_addon.rotation.register({
-    spec = dark_addon.rotation.classes.hunter.marksman,
+    spec = dark_addon.rotation.classes.hunter.marksmanship,
     name = 'spicy_rotations_marksman',
     label = 'The Spiciest Marksman',
     combat = combat,
