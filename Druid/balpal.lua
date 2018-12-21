@@ -25,6 +25,7 @@ SB.Rebirth = 20484
 SB.RejuvenationGermination = 155777
 SB.ForceofNature = 205636
 SB.ArcanicPulsar = 287790
+SB.Revive = 50769
 
 local x = 0 -- counting seconds in resting
 local y = 0 -- counter for opener
