@@ -8,9 +8,9 @@
 Druid\balpal.lua
 Druid\respal.lua
 Druid\balanceEXP.lua
-Hunter\beastmastery.lua
-Hunter\marksmanship.lua
-Hunter\survival.lua
+Hunter\bmpal.lua
+Hunter\mmpal.lua
+Hunter\svpal.lua
 Paladin\protpal.lua
 Paladin\holypal.lua
 Paladin\retpal.lua

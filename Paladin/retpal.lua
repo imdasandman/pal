@@ -6,6 +6,8 @@
 local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.paladin
 
+local race = UnitRace("player")
+
 local function combat()
     if not target.alive or not target.enemy then
         return
@@ -74,6 +76,21 @@ local function combat()
     if dispellable_unit then
         return cast(SB.CleanseToxins, dispellable_unit)
     end
+
+
+    ---
+    ---combat
+    ---
+
+    if not talent(4, 3) and race == "Blood Elf" and -spell(SB.ArcaneTorrent) == 0 then
+        return cast(SB.ArcaneTorrent)
+    end
+
+    if castable(SB.ShieldofVengeance) then
+        return cast(SB.ShieldofVengeance)
+    end
+
+
 
 
 end
