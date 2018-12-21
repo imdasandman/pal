@@ -166,8 +166,8 @@ end
 
 dark_addon.rotation.register({
   spec = dark_addon.rotation.classes.shaman.elemental,
-  name = 'elemental',
-  label = 'Bundled Elemental',
+  name = 'ShamPalEle',
+  label = 'not optimized for 8.1',
   combat = combat,
   resting = resting,
   interface = interface
