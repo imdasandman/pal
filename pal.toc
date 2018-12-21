@@ -5,11 +5,13 @@
 ## DefaultState: enabled
 ## Dependencies: dark_addon
 
-protpal.lua
-holypal.lua
-balpal.lua
-respal.lua
-balanceEXP.lua
-
+Druid\balpal.lua
+Druid\respal.lua
+Druid\balanceEXP.lua
+Hunter\beastmastery.lua
+Hunter\marksmanship.lua
+Hunter\survival.lua
+Paladin\protpal.lua
+Paladin\holypal.lua
 Shaman\ShamPalRest.lua
 Shaman\ShamPalEle.lua
