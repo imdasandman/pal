@@ -69,7 +69,7 @@ local function combat()
         return cast(SB.LayonHands, player)
     end
 
-        -- self-cleanse
+    -- self-cleanse
     local dispellable_unit = player.removable('poison', 'disease')
     if dispellable_unit then
         return cast(SB.CleanseToxins, dispellable_unit)
