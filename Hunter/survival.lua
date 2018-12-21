@@ -90,18 +90,20 @@ local function combat()
         -- Standard Abilities
         ---------------------
         -- Serpent Sting
-        if castable(SB.SerpentSting) and not target.debuff(SB.SerpentSting).exists or target.debuff(SB.SerpentSting).remains < 2) then
+        if castable(SB.SerpentSting) and (not target.debuff(SB.SerpentSting).exists or target.debuff(SB.SerpentSting).remains < 2) then
             return cast(SB.SerpentSting, 'target')
         end
         -- Kill Command
         if -power.focus >= 30 and castable(SB.KillCommand) and -spell(SB.KillCommand) == 0 then
             return cast(SB.KillCommand, 'target')
+            end
+        end
         -- Wildfire Bomb
         if spell(SB.WildfireBomb).charges >= 1 and castable(SB.WildfireBomb) then
             return cast(SB.WildfireBomb, 'target')
         end
         -- Mongoose Bite
-        if not buff.(SB.MongooseFury).exists or buff(SB.MongooseFury).count == 5 and castable(SB.MongooseBite) then
+        if not player.buff(SB.MongooseFury).exists or buff(SB.MongooseFury).count == 5 and castable(SB.MongooseBite) then
             return cast(SB.MongooseBite, 'target')
         end
 
@@ -133,7 +135,7 @@ local function combat()
             return cast(SB.AspectOfTheTurtle)
         end
     end        
-end
+
 
 local function resting()
     -- your resting rotation here!
