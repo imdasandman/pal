@@ -13,5 +13,6 @@ Hunter\marksmanship.lua
 Hunter\survival.lua
 Paladin\protpal.lua
 Paladin\holypal.lua
+Paladin\retpal.lua
 Shaman\ShamPalRest.lua
 Shaman\ShamPalEle.lua
