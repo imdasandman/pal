@@ -9,6 +9,10 @@ local race = UnitRace("player")
 local x = 0
 local function combat()
 
+
+  --Spells not in spellbook
+SB.Berserking = 26297
+SB.StormKeeper = 191634
   -----
   --- how many in range
   -----

@@ -39,6 +39,7 @@ SB.HealingTideTotem = 108280
 SB.ChainHeal = 1064
 SB.AscendanceResto = 114052
 SB.HealingWave = 77472
+SB.Berserking = 26297
 
 local function GroupType()
     return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
