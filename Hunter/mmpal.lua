@@ -76,9 +76,9 @@ end
 
 
 dark_addon.rotation.register({
-    spec = dark_addon.rotation.classes.hunter.marksman,
-    name = 'spicy_rotations_marksman',
-    label = 'The Spiciest Marksman',
+    spec = dark_addon.rotation.classes.hunter.marksmanship,
+    name = 'mmpal',
+    label = 'PAL: Marksmanship Hunter',
     combat = combat,
     resting = resting,
     interface = interface,
