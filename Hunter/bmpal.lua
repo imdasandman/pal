@@ -1,147 +1,92 @@
 local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.hunter
 
--- Tailored to the following build: 
-
---Globals
 SB.Bite = 17253
 SB.Smack = 49962
-SB.WildfireBomb = 259495
+SB.PetFrenzy = 272790
 
 local function GroupType()
-    return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
+   return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
 end
 
-local function UseMD()
-    if misdirect and group_type == 'raid' and tank.alive and target.enemy and targetoftarget == tank and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
+local function UseMD(group)
+    if not group == 'solo' and castable(SB.Misdirection) then
         return cast(SB.Misdirection, 'tank')
-    elseif misdirect and group_type == 'party' and tank.alive and target.enemy and targetoftarget == tank and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
-        return cast(SB.Misdirection, 'tank')
-    elseif misdirect and pet.alive and target.enemy and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
-        return cast(SB.Misdirection, 'pet')
-    end
-end
-
-local function gcd()
-    -- Pet Claw
-    if pet.target.enemy and castable(SB.Claw) and -spell(SB.Claw) == 0 then
-        cast(SB.Claw)
-    end
-    -- Pet Bite
-    if pet.target.enemy and castable(SB.Bite) and -spell(SB.Bite) ==0 then
-        cast(SB.Bite)
-    end
-    -- Pet Smack
-    if pet.target.enemy and castable(SB.Smack) and -spell(SB.Smack) == 0 then
-        cast(SB.Smack)
     end
 end
 
 local function combat()
-    ------------
-    -- Settings
-    ------------
-    local usetraps = dark_addon.settings.fetch('spicysv_settings_traps')
-    local usemisdirect = dark_addon.settings.fetch('spicysv_settings_misdirect')
+    local usetraps = dark_addon.settings.fetch('bmpal_settings_traps')
+    local usemisdirect = dark_addon.settings.fetch('bmpal_settings_misdirect')
     local race = UnitRace('player')
     local group_type = GroupType()
     
-    if target.alive and target.enemy and not player.channeling then
-
-        -- Auto use MD in combat
-        UseMD()
-
-        -------------
-        -- Trap Usage
-        -------------
-        -- Freezing Trap
-        if usetraps and modifier.shift and not modifier.alt and -spell(SB.FreezingTrap) == 0 then
+    if target.alive and target.enemy and not player.channeling() then
+        auto_shot()
+        
+        -- Traps
+        if usetraps and modifier.shift and not modifier.alt and castable(SB>FreezingTrap) then
             return cast(SB.FreezingTrap, 'ground')
         end
-        -- TarTrap
-        if usetraps and modifier.alt and not modifier.shift and -spell(SB.TarTrap) == 0 then
+        if usetraps and modifier.alt and not modifier.shift and castable(SB.TarTrap) then
             return cast(SB.TarTrap, 'ground')
         end
-
-        -------------
         -- Interrupts
-        -------------
         if toggle('interrupts') and castable(SB.CounterShot) and target.interrupt(50) then
             return cast(SB.CounterShot)
         end
-
-        -------------
-        -- Auto Racial
-        --------------
-        -- if toggle('racial', false) and race then
-        --     print (spicy_utils.getracial(race))
-        --     --cast(spicy_utils.getracial(race))
-        -- end
-
-        -------------
+        -- AOE
+        if toggle('multitarget', false) and modifier.rshift and -power.focus >= 70 then
+            return cast(SB.MultiShot, 'target')
+        end
         -- Cooldowns
-        -------------
-        -- Coordinated Assault
-        if toggle('cooldowns', false) and castable(SB.CoordinatedAssault) and -spell(SB.CoordinatedAssault) == 0 then
-            return cast(SB.CoordinatedAssault)
+        if toggle('cooldowns', false) and castable(SB.BeastialWrath) then
+            return cast(SB.BeastialWrath)
         end
-        
-        ---------------------
+        if toggle('cooldowns', false) and castable(SB.AspectOfTheWild) then
+            return cast(SB.AspectOfTheWild)
+        end
         -- Standard Abilities
-        ---------------------
-        -- Serpent Sting
-        if castable(SB.SerpentSting) and (not target.debuff(SB.SerpentSting).exists or target.debuff(SB.SerpentSting).remains < 2) then
-            return cast(SB.SerpentSting, 'target')
+        if spell(SB.BarbedShot).charges >= 1 and pet.buff(SB.PetFrenzy).remains <= 1.75 then
+            return cast(SB.BarbedShot, 'target')
         end
-        -- Kill Command
-        if -power.focus >= 30 and castable(SB.KillCommand) and -spell(SB.KillCommand) == 0 then
+        if -power.focus >= 30 and castable(SB.KillCommand) then
             return cast(SB.KillCommand, 'target')
-            end
         end
-        -- Wildfire Bomb
-        if spell(SB.WildfireBomb).charges >= 1 and castable(SB.WildfireBomb) then
-            return cast(SB.WildfireBomb, 'target')
+        if talent(1,3) and castable(SB.DireBeast) then
+            return cast(SB.DireBeast, 'target')
         end
-        -- Mongoose Bite
-        if not player.buff(SB.MongooseFury).exists or buff(SB.MongooseFury).count == 5 and castable(SB.MongooseBite) then
-            return cast(SB.MongooseBite, 'target')
+        if talent(2,3) and -power.focus < 90 and castable(SB.ChimaeraShot) then
+            return cast(SB.ChimaeraShot, 'target')
         end
-
-        
-        ----------------
+        if talent(4,3) and castable(SB.AMurderOfCrows) then
+            return cast(SB.AMurderOfCrows, 'target')
+        end
+        if -power.focus >=80 and castable(SB.CobraShot) and -spell(SB.KillCommand) >= 2.5 then
+            return cast(SB.CobraShot, 'target')
+        end
         -- Pet Management
-        -----------------
-        -- Revive Pet
         if pet.exists and not pet.alive then
             return cast (SB.RevivePet)
         end
-        -- Mend Pet
-        if pet.alive and pet.health.percent <= 70 and -spell(SB.MendPet) == 0 then
+        if pet.alive and pet.health.percent <= 70 and castable(SB.MendPet) then
             return cast(SB.MendPet)
         end
-
-        --------------
         -- Defensives
-        --------------
-        -- Healthstone
-        -- NEED TO DO THIS STILL
-
-        -- Exhilaration
-        if player.health.percent <= 50 or pet.health.percent <= 20 and castable(SB.Exhilaration) and -spell(SB.Exhilaration) == 0 then
+        if (player.health.percent <= 50 or pet.health.percent <= 20) and castable(SB.Exhilaration) then
             return cast(SB.Exhilaration)
         end
-        -- Aspect of the Turtle
         if player.health.percent < 50 and not castable(SB.Exhilaration) then
             return cast(SB.AspectOfTheTurtle)
         end
     end        
-
+end
 
 local function resting()
-    -- your resting rotation here!
-    local petselection = dark_addon.settings.fetch('spicysv_settings_petselector')
-    local group_type = GroupType()
-    -- Call Pet out of combat
+    local usemisdirect = dark_addon.settings.fetch('bmpal_settings_misdirect')
+    local petselection = dark_addon.settings.fetch('bmpal_settings_petselector')
+    --local group_type = GroupType()
+
     if not pet.exists then
         if petselection == 'key_1' then
             return cast(SB.CallPet1)
@@ -155,23 +100,30 @@ local function resting()
             return cast(SB.CallPet5)
         end
     end
-    -- handle Misdirection outside of combat
-    UseMD()
+    if pet.exists and not pet.alive then
+        return cast (SB.RevivePet)
+    end
+    -- Mend Pet
+    if pet.alive and pet.health.percent <= 70 and -spell(SB.MendPet) == 0 then
+        return cast(SB.MendPet)
+    end
+
 end
 
 function interface()
 
     local settings = {
-        key = 'spicysv_settings',
-        title = 'Survival Hunter',
+        key = 'bmpal_settings',
+        title = 'Beastmaster Pal',
         width = 250,
         height = 380,
+        fontheight = 10,
         resize = true,
         show = false,
         template = {
-            { type = 'header', text = 'Spicy SV Settings'},
+            { type = 'header', text = 'BM Pal Settings'},
             { type = 'text', text = 'the suggested talent build:'},
-            { type = 'text', text = ''},
+            { type = 'text', text = '1 3 2 3 2 1 1'},
             { type = 'rule'},
             { type = 'text', text = 'General Settings'},
             { key = 'misdirect', type = 'checkbox',
@@ -179,9 +131,6 @@ function interface()
             desc = 'Auto Misdirect',
             default = false
             },
-            { type = 'rule'},
-            { type = 'text', text = 'Talents'},
-            { type = 'rule'},
             { key = 'traps', type = 'checkbox',
             text = 'Traps',
             desc = 'Auto use Traps',
@@ -246,11 +195,10 @@ function interface()
 end
 
 dark_addon.rotation.register({
-    spec = dark_addon.rotation.classes.hunter.survival,
-    name = 'spicy_rotations_survival',
-    label = 'The Spiciest SV',
+    spec = dark_addon.rotation.classes.hunter.beastmastery,
+    name = 'bmpal',
+    label = 'PAL: Beastmastery Hunter',
     combat = combat,
-    gcd = gcd,
     resting = resting,
     interface = interface,
 })
