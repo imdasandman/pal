@@ -10,28 +10,10 @@ local function GroupType()
     return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
 end
 
-local function UseMD()
-    if misdirect and group_type == 'raid' and tank.alive and target.enemy and targetoftarget == tank and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
-        return cast(SB.Misdirection, 'tank')
-    elseif misdirect and group_type == 'party' and tank.alive and target.enemy and targetoftarget == tank and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
-        return cast(SB.Misdirection, 'tank')
-    elseif misdirect and pet.alive and target.enemy and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
-        return cast(SB.Misdirection, 'pet')
-    end
-end
-
-local function gcd()
-    -- no pet spells here for now
-end
-
-
 local function combat()
 
     if target.alive and target.enemy and not player.channeling() then
         auto_shot()
-
-        -- Auto use MD in combat
-        UseMD()
 
         -------------
         -- Trap Usage
@@ -51,15 +33,6 @@ local function combat()
         if toggle('interrupts') and castable(SB.CounterShot) and target.interrupt(50) then
             return cast(SB.CounterShot)
         end
-
-        -------------
-        -- Auto Racial
-        --------------
-        -- if toggle('racial', false) and race then
-        --     print (spicy_utils.getracial(race))
-        --     --cast(spicy_utils.getracial(race))
-        -- end
-
         -------------
         -- Cooldowns
         -------------
@@ -98,8 +71,7 @@ end
 local function resting()
     -- resting
     local group_type = GroupType()
-    -- handle Misdirection outside of combat
-    UseMD()
+
 end
 
 
@@ -108,7 +80,6 @@ dark_addon.rotation.register({
     name = 'spicy_rotations_marksman',
     label = 'The Spiciest Marksman',
     combat = combat,
-    gcd = gcd,
     resting = resting,
     interface = interface,
 })

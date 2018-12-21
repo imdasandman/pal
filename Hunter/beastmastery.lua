@@ -4,29 +4,28 @@ local SB = dark_addon.rotation.spellbooks.hunter
 SB.Bite = 17253
 SB.Smack = 49962
 SB.PetFrenzy = 272790
---[[ local function GroupType()
-   return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
-end ]]
 
---[[ local function UseMD(group)
-    if group == 'raid' and target.enemy and targetoftarget == tank and castable(SB.Misdirection) then
+local function GroupType()
+   return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
+end
+
+local function UseMD(group)
+    if not group == 'solo' and castable(SB.Misdirection) then
         return cast(SB.Misdirection, 'tank')
-    elseif group == 'party' and target.enemy and targetoftarget == tank and castable(SB.Misdirection) then
-        return cast(SB.Misdirection, 'tank')
-    elseif group == 'solo' and target.enemy and castable(SB.Misdirection) then
-        return cast(SB.Misdirection, 'pet')
     end
-end ]]
+end
 
 local function combat()
     local usetraps = dark_addon.settings.fetch('spicybm_settings_traps')
     local usemisdirect = dark_addon.settings.fetch('spicybm_settings_misdirect')
     local race = UnitRace('player')
-    --local group_type = GroupType()
+    local group_type = GroupType()
     
     if target.alive and target.enemy and not player.channeling() then
         auto_shot()
 
+        if target.enemy and (targetoftarget == 'tank' or targetoftarget == 'pet') and castable(SB.Misdirection) then
+            return cast(SB.Misdirection, )
         -- Traps
         if usetraps and modifier.shift and not modifier.alt and castable(SB>FreezingTrap) then
             return cast(SB.FreezingTrap, 'ground')
@@ -42,11 +41,6 @@ local function combat()
         if toggle('multitarget', false) and modifier.rshift and -power.focus >= 70 then
             return cast(SB.MultiShot, 'target')
         end
-        -- Auto Racial
-        -- if toggle('racial', false) and race then
-        --     print (spicy_utils.getracial(race))
-        --     --cast(spicy_utils.getracial(race))
-        -- end
         -- Cooldowns
         if toggle('cooldowns', false) and castable(SB.BeastialWrath) then
             return cast(SB.BeastialWrath)

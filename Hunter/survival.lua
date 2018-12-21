@@ -12,31 +12,6 @@ local function GroupType()
     return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
 end
 
-local function UseMD()
-    if misdirect and group_type == 'raid' and tank.alive and target.enemy and targetoftarget == tank and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
-        return cast(SB.Misdirection, 'tank')
-    elseif misdirect and group_type == 'party' and tank.alive and target.enemy and targetoftarget == tank and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
-        return cast(SB.Misdirection, 'tank')
-    elseif misdirect and pet.alive and target.enemy and castable(SB.Misdirection) and -spell(SB.Misdirection) == 0 then
-        return cast(SB.Misdirection, 'pet')
-    end
-end
-
-local function gcd()
-    -- Pet Claw
-    if pet.target.enemy and castable(SB.Claw) and -spell(SB.Claw) == 0 then
-        cast(SB.Claw)
-    end
-    -- Pet Bite
-    if pet.target.enemy and castable(SB.Bite) and -spell(SB.Bite) ==0 then
-        cast(SB.Bite)
-    end
-    -- Pet Smack
-    if pet.target.enemy and castable(SB.Smack) and -spell(SB.Smack) == 0 then
-        cast(SB.Smack)
-    end
-end
-
 local function combat()
     ------------
     -- Settings
@@ -46,10 +21,7 @@ local function combat()
     local race = UnitRace('player')
     local group_type = GroupType()
     
-    if target.alive and target.enemy and not player.channeling then
-
-        -- Auto use MD in combat
-        UseMD()
+    if target.alive and target.enemy and not player.channeling() then
 
         -------------
         -- Trap Usage
@@ -69,15 +41,6 @@ local function combat()
         if toggle('interrupts') and castable(SB.CounterShot) and target.interrupt(50) then
             return cast(SB.CounterShot)
         end
-
-        -------------
-        -- Auto Racial
-        --------------
-        -- if toggle('racial', false) and race then
-        --     print (spicy_utils.getracial(race))
-        --     --cast(spicy_utils.getracial(race))
-        -- end
-
         -------------
         -- Cooldowns
         -------------
@@ -117,13 +80,6 @@ local function combat()
         if pet.alive and pet.health.percent <= 70 and -spell(SB.MendPet) == 0 then
             return cast(SB.MendPet)
         end
-
-        --------------
-        -- Defensives
-        --------------
-        -- Healthstone
-        -- NEED TO DO THIS STILL
-
         -- Exhilaration
         if player.health.percent <= 50 or pet.health.percent <= 20 and castable(SB.Exhilaration) and -spell(SB.Exhilaration) == 0 then
             return cast(SB.Exhilaration)
@@ -153,8 +109,6 @@ local function resting()
             return cast(SB.CallPet5)
         end
     end
-    -- handle Misdirection outside of combat
-    UseMD()
 end
 
 function interface()
@@ -248,7 +202,6 @@ dark_addon.rotation.register({
     name = 'spicy_rotations_survival',
     label = 'The Spiciest SV',
     combat = combat,
-    gcd = gcd,
     resting = resting,
     interface = interface,
 })
