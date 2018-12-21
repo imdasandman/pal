@@ -1,18 +1,18 @@
+-- Beastmastery Hunter for 8.1 by Pixels 12/2018
+-- Talents: All  - except Camouflage / Binding Shot / Barrage / Stampede / Spitting Cobra
+-- Alt = Tar Trap
+-- Shift = Freezing Trap
+
 local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.hunter
 
+--Local Spells not in default spellbook
 SB.Bite = 17253
 SB.Smack = 49962
 SB.PetFrenzy = 272790
 
 local function GroupType()
    return IsInRaid() and 'raid' or IsInGroup() and 'party' or 'solo'
-end
-
-local function UseMD(group)
-    if not group == 'solo' and castable(SB.Misdirection) then
-        return cast(SB.Misdirection, 'tank')
-    end
 end
 
 local function combat()
@@ -31,14 +31,17 @@ local function combat()
         if usetraps and modifier.alt and not modifier.shift and castable(SB.TarTrap) then
             return cast(SB.TarTrap, 'ground')
         end
+
         -- Interrupts
         if toggle('interrupts') and castable(SB.CounterShot) and target.interrupt(50) then
             return cast(SB.CounterShot)
         end
+
         -- AOE
         if toggle('multitarget', false) and modifier.rshift and -power.focus >= 70 then
             return cast(SB.MultiShot, 'target')
         end
+
         -- Cooldowns
         if toggle('cooldowns', false) and castable(SB.BeastialWrath) then
             return cast(SB.BeastialWrath)
@@ -46,6 +49,7 @@ local function combat()
         if toggle('cooldowns', false) and castable(SB.AspectOfTheWild) then
             return cast(SB.AspectOfTheWild)
         end
+
         -- Standard Abilities
         if spell(SB.BarbedShot).charges >= 1 and pet.buff(SB.PetFrenzy).remains <= 1.75 then
             return cast(SB.BarbedShot, 'target')
@@ -65,6 +69,7 @@ local function combat()
         if -power.focus >=80 and castable(SB.CobraShot) and -spell(SB.KillCommand) >= 2.5 then
             return cast(SB.CobraShot, 'target')
         end
+
         -- Pet Management
         if pet.exists and not pet.alive then
             return cast (SB.RevivePet)
@@ -72,6 +77,7 @@ local function combat()
         if pet.alive and pet.health.percent <= 70 and castable(SB.MendPet) then
             return cast(SB.MendPet)
         end
+
         -- Defensives
         if (player.health.percent <= 50 or pet.health.percent <= 20) and castable(SB.Exhilaration) then
             return cast(SB.Exhilaration)
@@ -85,7 +91,6 @@ end
 local function resting()
     local usemisdirect = dark_addon.settings.fetch('bmpal_settings_misdirect')
     local petselection = dark_addon.settings.fetch('bmpal_settings_petselector')
-    --local group_type = GroupType()
 
     if not pet.exists then
         if petselection == 'key_1' then
@@ -103,7 +108,6 @@ local function resting()
     if pet.exists and not pet.alive then
         return cast (SB.RevivePet)
     end
-    -- Mend Pet
     if pet.alive and pet.health.percent <= 70 and -spell(SB.MendPet) == 0 then
         return cast(SB.MendPet)
     end
@@ -122,15 +126,8 @@ function interface()
         show = false,
         template = {
             { type = 'header', text = 'BM Pal Settings'},
-            { type = 'text', text = 'the suggested talent build:'},
-            { type = 'text', text = '1 3 2 3 2 1 1'},
             { type = 'rule'},
             { type = 'text', text = 'General Settings'},
-            { key = 'misdirect', type = 'checkbox',
-            text = 'Misdirection',
-            desc = 'Auto Misdirect',
-            default = false
-            },
             { key = 'traps', type = 'checkbox',
             text = 'Traps',
             desc = 'Auto use Traps',

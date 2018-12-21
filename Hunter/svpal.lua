@@ -1,9 +1,12 @@
+-- Survival Hunter for 8.1 by Pixels 12/2018
+-- Talents: In Progress
+-- Alt = Tar Trap
+-- Shift = Freezing Trap
+
 local dark_addon = dark_interface
-local SB = dark_addon.rotation.spellbooks.hunter
+local SB = dark_addon.rotation.spellbooks.hunter 
 
--- Tailored to the following build: 
-
---Globals
+--Local Spells not in default spellbook
 SB.Bite = 17253
 SB.Smack = 49962
 SB.WildfireBomb = 259495
@@ -13,9 +16,6 @@ local function GroupType()
 end
 
 local function combat()
-    ------------
-    -- Settings
-    ------------
     local usetraps = dark_addon.settings.fetch('spicysv_settings_traps')
     local usemisdirect = dark_addon.settings.fetch('spicysv_settings_misdirect')
     local race = UnitRace('player')
@@ -23,69 +23,48 @@ local function combat()
     
     if target.alive and target.enemy and not player.channeling() then
 
-        -------------
-        -- Trap Usage
-        -------------
-        -- Freezing Trap
+        -- Traps
         if usetraps and modifier.shift and not modifier.alt and -spell(SB.FreezingTrap) == 0 then
             return cast(SB.FreezingTrap, 'ground')
         end
-        -- TarTrap
         if usetraps and modifier.alt and not modifier.shift and -spell(SB.TarTrap) == 0 then
             return cast(SB.TarTrap, 'ground')
         end
 
-        -------------
         -- Interrupts
-        -------------
         if toggle('interrupts') and castable(SB.CounterShot) and target.interrupt(50) then
             return cast(SB.CounterShot)
         end
-        -------------
+
         -- Cooldowns
-        -------------
-        -- Coordinated Assault
         if toggle('cooldowns', false) and castable(SB.CoordinatedAssault) and -spell(SB.CoordinatedAssault) == 0 then
             return cast(SB.CoordinatedAssault)
         end
         
-        ---------------------
         -- Standard Abilities
-        ---------------------
-        -- Serpent Sting
         if castable(SB.SerpentSting) and (not target.debuff(SB.SerpentSting).exists or target.debuff(SB.SerpentSting).remains < 2) then
             return cast(SB.SerpentSting, 'target')
         end
-        -- Kill Command
         if -power.focus >= 30 and castable(SB.KillCommand) and -spell(SB.KillCommand) == 0 then
             return cast(SB.KillCommand, 'target')
         end
-        -- Wildfire Bomb
         if spell(SB.WildfireBomb).charges >= 1 and castable(SB.WildfireBomb) then
             return cast(SB.WildfireBomb, 'target')
         end
-        -- Mongoose Bite
         if not player.buff(SB.MongooseFury).exists or buff(SB.MongooseFury).count == 5 and castable(SB.MongooseBite) then
             return cast(SB.MongooseBite, 'target')
         end
 
-        
-        ----------------
         -- Pet Management
-        -----------------
-        -- Revive Pet
         if pet.exists and not pet.alive then
             return cast (SB.RevivePet)
         end
-        -- Mend Pet
         if pet.alive and pet.health.percent <= 70 and -spell(SB.MendPet) == 0 then
             return cast(SB.MendPet)
         end
-        -- Exhilaration
         if player.health.percent <= 50 or pet.health.percent <= 20 and castable(SB.Exhilaration) and -spell(SB.Exhilaration) == 0 then
             return cast(SB.Exhilaration)
         end
-        -- Aspect of the Turtle
         if player.health.percent < 50 and not castable(SB.Exhilaration) then
             return cast(SB.AspectOfTheTurtle)
         end
@@ -93,10 +72,10 @@ local function combat()
 end
 
 local function resting()
-    -- your resting rotation here!
+    --resting
     local petselection = dark_addon.settings.fetch('spicysv_settings_petselector')
     local group_type = GroupType()
-    -- Call Pet out of combat
+
     if not pet.exists then
         if petselection == 'key_1' then
             return cast(SB.CallPet1)
@@ -115,31 +94,23 @@ end
 function interface()
 
     local settings = {
-        key = 'spicysv_settings',
+        key = 'svpal_settings',
         title = 'Survival Hunter',
         width = 250,
         height = 380,
         resize = true,
         show = false,
         template = {
-            { type = 'header', text = 'Spicy SV Settings'},
-            { type = 'text', text = 'the suggested talent build:'},
-            { type = 'text', text = ''},
+            { type = 'header', text = 'SV Pal Settings'},
             { type = 'rule'},
             { type = 'text', text = 'General Settings'},
-            { key = 'misdirect', type = 'checkbox',
-            text = 'Misdirection',
-            desc = 'Auto Misdirect',
-            default = false
-            },
-            { type = 'rule'},
-            { type = 'text', text = 'Talents'},
-            { type = 'rule'},
             { key = 'traps', type = 'checkbox',
             text = 'Traps',
             desc = 'Auto use Traps',
             default = false
             },
+            { type = 'rule'},
+            { type = 'text', text = 'Talents'},
             { type = 'rule'},
             { type = 'text', text = 'Pet Management'},
             { key = 'petselector', type = 'dropdown',

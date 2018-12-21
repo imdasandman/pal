@@ -1,9 +1,12 @@
+-- Marksmanship Hunter for 8.1 by Pixels 12/2018
+-- Talents: In Progress
+-- Alt = Tar Trap
+-- Shift = Freezing Trap
+
 local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.hunter
 
--- Tailored to the following build: 1 1 2 3 2 3 2
-
---Globals
+--Local Spells not in default spellbook
 SB.CarefulAim = 260228
 
 local function GroupType()
@@ -15,52 +18,37 @@ local function combat()
     if target.alive and target.enemy and not player.channeling() then
         auto_shot()
 
-        -------------
-        -- Trap Usage
-        -------------
-        -- Freezing Trap
+        -- Traps
         if usetraps and modifier.shift and not modifier.alt and -spell(SB.FreezingTrap) == 0 then
             return cast(SB.FreezingTrap, 'ground')
         end
-        -- TarTrap
         if usetraps and modifier.alt and not modifier.shift and -spell(SB.TarTrap) == 0 then
             return cast(SB.TarTrap, 'ground')
         end
 
-        -------------
         -- Interrupts
-        -------------
         if toggle('interrupts') and castable(SB.CounterShot) and target.interrupt(50) then
             return cast(SB.CounterShot)
         end
-        -------------
+
         -- Cooldowns
-        -------------
-        -- Double Tap
         if castable(SB.DoubleTap) and spell(SB.AimedShot).chargeds >= 1 then
             return cast(SB.DoubleTap)
         end
-        -- Trueshot
         if castable(SB.Trueshot) and -buff(SB.CarefulAim) and -spell(SB.Trueshot) == 0 then
             return cast(SB.Trueshot)
         end
 
-        ---------------------
         -- Standard Abilities
-        ---------------------
-        -- Aimed Shot
         if spell(SB.AimedShot).chargeds >= 1 and not -buff(SB.PreciseShots) then
             return cast(SB.AimedShot)
         end
-        -- Arcane Shot
         if -buff(SB.PreciseShots) then
             return cast(SB.ArcaneShot, 'target')
         end
-        -- Rapid Fire
         if castable(SB.RapidFire) and -spell(SB.RapidFire) == 0 then
             return cast(SB.RapidFire, 'target')
         end
-        -- Steady Shot - filler
         if castable(SB.SteadyShot) then
             return cast(SB.SteadyShot, 'target')
         end
