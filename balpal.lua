@@ -51,7 +51,7 @@ end
 
 local function GCD()
 
-    if not modifier.shift and not talent(5, 2) and target.castable(SB.Starsurge) and (player.buff(SB.SolarEmpowerment).count + player.buff(SB.LunarEmpowerment).count) < 4 and player.buff(SB.SolarEmpowerment).count < 3 and player.buff(SB.LunarEmpowerment).count < 3 then
+    if not modifier.lshift and not talent(5, 2) and target.castable(SB.Starsurge) and (player.buff(SB.SolarEmpowerment).count + player.buff(SB.LunarEmpowerment).count) < 4 and player.buff(SB.SolarEmpowerment).count < 3 and player.buff(SB.LunarEmpowerment).count < 3 then
         print("BOOMBOOM!!")
         return cast(SB.Starsurge, 'target')
     end
@@ -137,10 +137,6 @@ local function combat()
     else
         mobsinRange = 1
     end
-
-
-
-
 
     --print(mobsinRange)
 
@@ -314,7 +310,7 @@ local function combat()
             if target.castable(SB.Sunfire) and y == 2 and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 5) then
                 return cast(SB.Sunfire, 'target')
             end
-            if talent(6, 3) and target.castable(SB.StellarFlare) and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
+            if talent(6, 3) and target.castable(SB.StellarFlare) and not lastcast(SB.StellarFlare) and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
                 return cast(SB.StellarFlare, 'target')
             end
             if target.castable(SB.LunarStrike) and player.buff(SB.LunarEmpowerment).count >= 1 and player.buff(SB.SolarEmpowerment).count == 0 then
@@ -356,20 +352,20 @@ local function combat()
 
     -- standard opener
     if toggle('opener', false) and not talent(5, 2) and y ~= 99 then
-        if target.castable(SB.SolarWrath) and y < 2 then
+        if target.castable(SB.SolarWrath) and y <= 1 then
             y = y + 1
             return cast(SB.SolarWrath, 'target')
-        end
-
-        if target.castable(SB.Moonfire) and (not target.debuff(SB.MoonfireDebuff).exists or target.debuff(SB.MoonfireDebuff).remains < 6) then
-            return cast(SB.Moonfire, 'target')
-        end
-        if target.castable(SB.Sunfire) and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 5) then
-            return cast(SB.Sunfire, 'target')
         end
         if talent(6, 3) and target.castable(SB.StellarFlare) and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
             return cast(SB.StellarFlare, 'target')
         end
+        if target.castable(SB.Sunfire) and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 5) then
+            return cast(SB.Sunfire, 'target')
+        end
+        if target.castable(SB.Moonfire) and (not target.debuff(SB.MoonfireDebuff).exists or target.debuff(SB.MoonfireDebuff).remains < 6) then
+            return cast(SB.Moonfire, 'target')
+        end
+
         if y ~= 3 and target.debuff(SB.MoonfireDebuff).exists and target.debuff(SB.SunfireDebuff).exists then
             y = 3
         end
@@ -466,10 +462,16 @@ local function combat()
         return cast(SB.Starsurge, 'target')
     end
 
-    if not modifier.shift and not talent(5, 2) and target.castable(SB.Starsurge) and (player.buff(SB.SolarEmpowerment).count + player.buff(SB.LunarEmpowerment).count) < 4 and player.buff(SB.SolarEmpowerment).count < 3 and player.buff(SB.LunarEmpowerment).count < 3 then
+    if not modifier.shift and not talent(5, 2) and target.castable(SB.Starsurge) and player.buff(SB.ArcanicPulsar).count < 8 and (player.buff(SB.SolarEmpowerment).count + player.buff(SB.LunarEmpowerment).count) < 4 and player.buff(SB.SolarEmpowerment).count < 3 and player.buff(SB.LunarEmpowerment).count < 3 then
+        return cast(SB.Starsurge, 'target')
+    end
+    if not modifier.shift and not talent(5, 2) and target.castable(SB.Starsurge) and player.buff(SB.ArcanicPulsar).count == 8 and (player.buff(SB.SolarEmpowerment).count + player.buff(SB.LunarEmpowerment).count) < 2 and (player.buff(SB.SolarEmpowerment).count <= 1 or player.buff(SB.LunarEmpowerment).count <= 1) then
         return cast(SB.Starsurge, 'target')
     end
 
+    if not modifier.shift and not talent(5, 2) and target.castable(SB.Starsurge) and power.astral.actual == 100 then
+        return cast(SB.Starsurge, 'target')
+    end
 
     -----------------------------
     --- Standard Rotation
@@ -477,16 +479,16 @@ local function combat()
 
 
     --dots
+    if talent(6, 3) and target.castable(SB.StellarFlare) and not lastcast(SB.StellarFlare) and  ((target.time_to_die / (1.5 / ((UnitSpellHaste("player") / 100) + 1))) * enemyCount) >= 5 and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
+        return cast(SB.StellarFlare, 'target')
+    end
+
     if target.castable(SB.Sunfire) and ((target.time_to_die * (enemyCount / (1.5 / ((UnitSpellHaste("player") / 100) + 1)))) >= (4 + enemies.around(40))) and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 3.6) then
         return cast(SB.Sunfire, 'target')
     end
     if target.castable(SB.Moonfire) and ((target.time_to_die / (1.5 / ((UnitSpellHaste("player") / 100) + 1))) * enemyCount) >= 6 and (not target.debuff(SB.MoonfireDebuff).exists or target.debuff(SB.MoonfireDebuff).remains < 4.8) then
         return cast(SB.Moonfire, 'target')
     end
-    if talent(6, 3) and target.castable(SB.StellarFlare) and ((target.time_to_die / (1.5 / ((UnitSpellHaste("player") / 100) + 1))) * enemyCount) >= 5 and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
-        return cast(SB.StellarFlare, 'target')
-    end
-
 
     --nukes
     if target.castable(SB.LunarStrike) and player.buff(SB.SolarEmpowerment).count < 3 and player.buff(SB.LunarEmpowerment).count == 3 then
@@ -499,18 +501,14 @@ local function combat()
     --need to add code for that azerite trait ....if I ever get 200
     --(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))|variable.az_ss&buff.ca_inc.up&prev.solar_wrath)
 
-    if player.buff(SB.SolarEmpowerment).down and player.buff(SB.LunarEmpowerment).up then
+    if player.buff(SB.SolarEmpowerment).count == 0 and player.buff(SB.LunarEmpowerment).count > 0 then
         return cast(SB.LunarStrike, 'target')
     end
 
-    if target.castable(SB.SolarWrath) and not lastcast(SB.SolarWrath) then
+    if target.castable(SB.SolarWrath)  then
         return cast(SB.SolarWrath, 'target')
     end
 
-    --[[	93.17	solar_wrath,if=variable.az_ss<3|!buff.ca_inc.up|!prev.solar_wrath
-    0.00	sunfire
-    Fallthru for movement
-    ]]--
     if target.castable(SB.Sunfire) then
         return cast(SB.Sunfire)
     end
@@ -677,6 +675,32 @@ local function resting()
 
     y = 0
     z = 0
+
+
+    -----------------------------
+    --- Modifiers
+    -----------------------------
+    --rez
+    if modifier.control and not mouseover.alive and -spell(SB.Revive) == 0 then
+        return cast(SB.Revive, 'mouseover')
+    end
+
+    if modifier.lalt then
+        if castable(SB.BearForm) and not -buff(SB.BearForm) then
+            return cast(SB.BearForm)
+        end
+        if castable(SB.Barkskin) and not -buff(SB.Barkskin) then
+            return cast(SB.Barkskin)
+        end
+        --  if -buff(SB.Bearform) and talent(3, 2) and castable(SB.FrenziedRegeneration) then
+        --    return cast(SB.FrenziedRegeneration)
+        --  end
+        if -buff(SB.Barkskin) and -buff(SB.BearForm) then
+            return
+        end
+    end
+
+
     if GetShapeshiftForm() == 3 and player.moving then
         return
     elseif toggle('Forms', false) and not player.moving and player.buff(SB.Prowl).down and player.buff(SB.MoonkinForm).down and player.buff(SB.TigerDashBuff).down and player.buff(SB.Dash).down and player.alive then
