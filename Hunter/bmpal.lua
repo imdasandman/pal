@@ -25,7 +25,7 @@ local function combat()
         auto_shot()
         
         -- Traps
-        if usetraps and modifier.shift and not modifier.alt and castable(SB>FreezingTrap) then
+        if usetraps and modifier.shift and not modifier.alt and castable(SB.FreezingTrap) then
             return cast(SB.FreezingTrap, 'ground')
         end
         if usetraps and modifier.alt and not modifier.shift and castable(SB.TarTrap) then
