@@ -26,7 +26,8 @@ local function combat()
         enemyCount = 1
     end
 
-
+-- defensive
+-- defensive
 
     -- Interupts
     if toggle('interrupts', false) and target.interrupt() and target.distance < 8 and -spell(SB.Rebuke) == 0 then
