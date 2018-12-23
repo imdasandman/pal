@@ -138,7 +138,7 @@ local function resting()
     return cast(SB.Earthquake, 'ground')
   end
 
-  if modifier.control and -spell(SB.CapawowcitorTotem) == 0 then
+  if modifier.control and -spell(SB.CapacitorTotem) == 0 then
     return cast(SB.CapacitorTotem, 'ground')
   end
 
