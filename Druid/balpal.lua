@@ -225,7 +225,7 @@ local function combat()
     --- Moving!
     -----------------------------
     -- Moonkin Form
-    if not modifier.lalt and not lastcast(SB.MoonkinForm) and player.buff(SB.TigerDashBuff).down and GetShapeshiftForm() ~= 4 then
+    if not modifier.lalt and not player.spell(SB.MoonkinForm).lastcast and player.buff(SB.TigerDashBuff).down and GetShapeshiftForm() ~= 4 then
         return cast(SB.MoonkinForm, player)
     end
 
