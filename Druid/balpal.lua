@@ -28,7 +28,6 @@ SB.ArcanicPulsar = 287790
 SB.Revive = 50769
 SB.BearForm = 5487
 
-
 local x = 0 -- counting seconds in resting
 local y = 0 -- counter for opener
 local z = 0 -- time in combat
@@ -55,7 +54,6 @@ end
 local function GCD()
 
     if not modifier.lshift and not talent(5, 2) and target.castable(SB.Starsurge) and (player.buff(SB.SolarEmpowerment).count + player.buff(SB.LunarEmpowerment).count) < 4 and player.buff(SB.SolarEmpowerment).count < 3 and player.buff(SB.LunarEmpowerment).count < 3 then
-        print("BOOMBOOM!!")
         return cast(SB.Starsurge, 'target')
     end
 
@@ -482,11 +480,11 @@ local function combat()
 
 
     --dots
-    if talent(6, 3) and target.castable(SB.StellarFlare) and not lastcast(SB.StellarFlare) and  ((target.time_to_die / (1.5 / ((UnitSpellHaste("player") / 100) + 1))) * enemyCount) >= 5 and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
+    if talent(6, 3) and target.castable(SB.StellarFlare) and not lastcast(SB.StellarFlare) and ((target.time_to_die / (1.5 / ((UnitSpellHaste("player") / 100) + 1))) * enemyCount) >= 5 and (not target.debuff(SB.StellarFlare).exists or target.debuff(SB.StellarFlare).remains < 7.2) then
         return cast(SB.StellarFlare, 'target')
     end
 
-    if target.castable(SB.Sunfire) and ((target.time_to_die * (enemyCount / (1.5 / ((UnitSpellHaste("player") / 100) + 1)))) >= (4 + enemies.around(40))) and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 3.6) then
+    if target.castable(SB.Sunfire) and ((target.time_to_die * (enemyCount / (1.5 / ((UnitSpellHaste("player") / 100) + 1)))) >= (4 + enemyCount)) and (not target.debuff(SB.SunfireDebuff).exists or target.debuff(SB.SunfireDebuff).remains < 3.6) then
         return cast(SB.Sunfire, 'target')
     end
     if target.castable(SB.Moonfire) and ((target.time_to_die / (1.5 / ((UnitSpellHaste("player") / 100) + 1))) * enemyCount) >= 6 and (not target.debuff(SB.MoonfireDebuff).exists or target.debuff(SB.MoonfireDebuff).remains < 4.8) then
@@ -508,7 +506,7 @@ local function combat()
         return cast(SB.LunarStrike, 'target')
     end
 
-    if target.castable(SB.SolarWrath)  then
+    if target.castable(SB.SolarWrath) then
         return cast(SB.SolarWrath, 'target')
     end
 
@@ -702,7 +700,6 @@ local function resting()
             return
         end
     end
-
 
     if GetShapeshiftForm() == 3 and player.moving then
         return
