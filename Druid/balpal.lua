@@ -27,6 +27,7 @@ SB.ForceofNature = 205636
 SB.ArcanicPulsar = 287790
 SB.Revive = 50769
 SB.BearForm = 5487
+SB.WhisperInsanityBuff = 176151
 
 local x = 0 -- counting seconds in resting
 local y = 0 -- counter for opener
@@ -52,11 +53,6 @@ local function findHealer()
 end
 
 local function GCD()
-
-    if not modifier.lshift and not talent(5, 2) and target.castable(SB.Starsurge) and (player.buff(SB.SolarEmpowerment).count + player.buff(SB.LunarEmpowerment).count) < 4 and player.buff(SB.SolarEmpowerment).count < 3 and player.buff(SB.LunarEmpowerment).count < 3 then
-        return cast(SB.Starsurge, 'target')
-    end
-
 end
 
 --- Combat Rotation
@@ -89,7 +85,7 @@ local function combat()
     local arcanicPulsar = dark_addon.settings.fetch('balpal_settings_arcanicPulsar')
     local innervateTarget = dark_addon.settings.fetch('balpal_settings_innervateTarget')
     local autoPotion = dark_addon.settings.fetch('balpal_settings_autoPotion')
-
+    local autoRune = dark_addon.settings.fetch('balpal_settings_autoRune')
 
     -----------------------------
     --- Modifiers
@@ -147,7 +143,7 @@ local function combat()
 
 
     -----------------------------
-    --- Health stone / Trinket  /etc
+    --- Health stone / Trinket  / Items / etc
     -----------------------------
 
     --Health stone
@@ -160,7 +156,6 @@ local function combat()
     end
 
     --potions
-
     if autoPotion == "pot_b" and (player.buff(SB.IncarnationBalance).remains > 10 or player.buff(SB.CelestialAlignment).remains > 10) and GetItemCount(163222) >= 1 and GetItemCooldown(163222) == 0 then
         macro('/use Battle Potion of Intellect')
         print("glug - battle potion of intellect - glug")
@@ -175,6 +170,9 @@ local function combat()
         print("glug - deadly grace - glug")
     end
 
+    if autoRune == "rune_b" and (player.buff(SB.WhisperInsanityBuff).down or player.buff(SB.WhisperInsanityBuff).remain < 600) and GetItemCount(118922) == 1 and GetItemCooldown(118922) == 0 then
+        macro('/use item:118922')
+    end
 
     -- Interupts
     if toggle('interrupts', false) and target.interrupt(intpercent) and target.distance <= 45 and -spell(SB.SolarBeam) == 0 then
@@ -463,6 +461,8 @@ local function combat()
         return cast(SB.Starsurge, 'target')
     end
 
+
+    -- single target
     if not modifier.shift and not talent(5, 2) and target.castable(SB.Starsurge) and player.buff(SB.ArcanicPulsar).count < 8 and (player.buff(SB.SolarEmpowerment).count + player.buff(SB.LunarEmpowerment).count) < 4 and player.buff(SB.SolarEmpowerment).count < 3 and player.buff(SB.LunarEmpowerment).count < 3 then
         return cast(SB.Starsurge, 'target')
     end
@@ -473,6 +473,10 @@ local function combat()
     if not modifier.shift and not talent(5, 2) and target.castable(SB.Starsurge) and power.astral.actual == 100 then
         return cast(SB.Starsurge, 'target')
     end
+
+
+    --
+
 
     -----------------------------
     --- Standard Rotation
@@ -522,7 +526,7 @@ end
 
 
 
---[[
+--[[/rel
     --TANK SECTION - EMERGENCY BEAR
     if toggle('TANK', false) and talent(3, 2) then
 
@@ -756,8 +760,8 @@ local function interface()
     local settings = {
         key = 'balpal_settings',
         title = 'Balance Druid',
-        width = 250,
-        height = 380,
+        width = 300,
+        height = 500,
         resize = true,
         show = false,
         template = {
@@ -788,7 +792,15 @@ local function interface()
                   { key = 'pot_d', text = 'Potion of rising death' },
               }
             },
-
+            { key = 'autoRune', type = 'dropdown',
+              text = 'Auto Rune',
+              desc = '',
+              default = 'rune_a',
+              list = {
+                  { key = 'rune_a', text = 'NONE' },
+                  { key = 'rune_b', text = 'Oralius Whispering Crystal' },
+              }
+            },
 
         }
     }
