@@ -1,5 +1,5 @@
 -- Survival Hunter for 8.1 by Pixels 12/2018
--- Talents: In Progress
+-- Talents: Work In Progress
 -- Alt = Tar Trap
 -- Shift = Freezing Trap
 

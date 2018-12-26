@@ -2,6 +2,7 @@
 -- Talents: All  - except Camouflage / Binding Shot / Barrage / Stampede / Spitting Cobra
 -- Alt = Tar Trap
 -- Shift = Freezing Trap
+-- RShift = MultiShot
 
 local dark_addon = dark_interface
 local SB = dark_addon.rotation.spellbooks.hunter
