@@ -170,9 +170,9 @@ local function combat()
         print("glug - deadly grace - glug")
     end
 
-    if autoRune == "rune_b" and (player.buff(SB.WhisperInsanityBuff).down or player.buff(SB.WhisperInsanityBuff).remain < 600) and GetItemCount(118922) == 1 and GetItemCooldown(118922) == 0 then
-        macro('/use item:118922')
-    end
+    --if autoRune == "rune_b" and (player.buff(SB.WhisperInsanityBuff).down or player.buff(SB.WhisperInsanityBuff).remain < 600) and GetItemCount(118922) == 1 and GetItemCooldown(118922) == 0 then
+    --    macro('/use item:118922')
+    --end
 
     -- Interupts
     if toggle('interrupts', false) and target.interrupt(intpercent) and target.distance <= 45 and -spell(SB.SolarBeam) == 0 then
