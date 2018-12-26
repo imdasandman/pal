@@ -451,7 +451,7 @@ local function combat()
     if not modifier.shift and talent(5, 2) and enemyCount <= aoeTarget and target.castable(SB.Starsurge) then
         if player.buff(SB.Starlord).down then
             return cast(SB.Starsurge, target)
-        elseif player.buff(SB.Starlord).remains >= 8 and player.buff(SB.ArcanicPulsar).counts < 8 then
+        elseif player.buff(SB.Starlord).remains >= 8 and player.buff(SB.ArcanicPulsar).count < 8 then
             return cast(SB.Starsurge, 'target')
         elseif power.astral.actual >= 87 and player.buff(SB.Starlord).remains <= 7 then
             macro('/cancelaura Starlord')
